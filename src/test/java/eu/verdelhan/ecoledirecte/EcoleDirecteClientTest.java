@@ -30,31 +30,31 @@ public class EcoleDirecteClientTest {
         };
 
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("uuuuuuuuuuuuuuuuuu", 8080)))
-                .proxyAuthenticator(proxyAuthenticator)
+//                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("uuuuuuuuuuuuuuuuuu", 8080)))
+//                .proxyAuthenticator(proxyAuthenticator)
                 .build();
 
-        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
-        System.out.println(client.authenticate("foo", "bar").getToken());
-
-        Eleve e = client.getEleve("1100");
-        System.out.println(e.getDateDeNaissance());
-
-        Notes n = client.getEleveNotes("376");
-        System.out.println(n.getNotes().size());
-        System.out.println(n.getLSUN().get("A001").get(0).getLibelleMatiere());
-
-        VieScolaire vs = client.getEleveVieScolaire("376");
-        System.out.println(vs.getAbsencesRetards().size());
-
-        Eleves elvs = client.getClasseEleves("1");
-        System.out.println(elvs.getEntity().getLibelle());
-
-        ConseilDeClasse cc = client.getConseilDeClasse("66", "19", "A001");
-        cc.getEleves().forEach(el -> {
-            System.out.println(
-                    new String(Base64.getMimeDecoder().decode(el.getAppreciationPP().getText()))
-            );
-        });
+//        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
+//        System.out.println(client.authenticate("foo", "bar").getToken());
+//
+//        Eleve e = client.getEleve("1100");
+//        System.out.println(e.getDateDeNaissance());
+//
+//        Notes n = client.getEleveNotes("376");
+//        System.out.println(n.getNotes().size());
+//        System.out.println(n.getLSUN().get("A001").get(0).getLibelleMatiere());
+//
+//        VieScolaire vs = client.getEleveVieScolaire("376");
+//        System.out.println(vs.getAbsencesRetards().size());
+//
+//        Eleves elvs = client.getClasseEleves("1");
+//        System.out.println(elvs.getEntity().getLibelle());
+//
+//        ConseilDeClasse cc = client.getConseilDeClasse("66", "19", "A001");
+//        cc.getEleves().forEach(el -> {
+//            System.out.println(
+//                    new String(Base64.getMimeDecoder().decode(el.getAppreciationPP().getText()))
+//            );
+//        });
     }
 }
