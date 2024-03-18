@@ -4,11 +4,11 @@
 
 ## Introduction
 
-Cette bibliothèque vise à simplifier l'accès à l'API d'École Directe, bien que celle-ci ne suive pas strictement les bonnes pratiques habituelles des services en ligne. Elle est conçue pour être légère et simple d'utilisation, bien que sa fiabilité puisse varier en fonction des changements dans l'API d'École Directe.
+Cette bibliothèque vise à simplifier l'accès à l'API d'EcoleDirecte, bien que celle-ci ne suive pas strictement les bonnes pratiques habituelles des services en ligne. Elle est conçue pour être légère et simple d'utilisation, bien que sa fiabilité puisse varier en fonction des changements dans l'API d'EcoleDirecte.
 
 ## Fonctionnalités
 
-- Interrogation simplifiée de l'API d'École Directe.
+- Interrogation simplifiée de l'API d'EcoleDirecte.
 - Prise en charge des fonctionnalités de base telles que la récupération des notes, des devoirs, etc.
 - Facilité d'intégration dans des projets Java existants.
 
@@ -32,8 +32,8 @@ Voici un exemple d'utilisation de base :
 # TODO
 ```
 
-## À propos d'École Directe
-École Directe est une plateforme en ligne utilisée par de nombreuses écoles et établissements éducatifs pour faciliter la communication entre les enseignants, les élèves et les parents. Cette plateforme offre un accès à diverses fonctionnalités telles que la consultation des emplois du temps, la saisie des devoirs, le suivi des notes, les messages entre utilisateurs, et bien plus encore. Bien que pratique, l'API d'École Directe peut présenter des particularités et des limitations, ce qui peut rendre son intégration et son utilisation via des bibliothèques tierces comme ecoledirecte-client un peu plus complexes.
+## À propos d'EcoleDirecte
+EcoleDirecte est une plateforme en ligne utilisée par de nombreuses écoles et établissements éducatifs pour faciliter la communication entre les enseignants, les élèves et les parents. Cette plateforme offre un accès à diverses fonctionnalités telles que la consultation des emplois du temps, la saisie des devoirs, le suivi des notes, les messages entre utilisateurs, et bien plus encore. Bien que pratique, l'API d'EcoleDirecte peut présenter des particularités et des limitations, ce qui peut rendre son intégration et son utilisation via des bibliothèques tierces comme ecoledirecte-client un peu plus complexes.
 
 ### Exemples d'appels cURL
 
@@ -53,7 +53,7 @@ curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&' -H 'acce
 ```
 
 ## Avertissement
-Veuillez noter que cette bibliothèque est fournie "telle quelle" et ne garantit pas un accès complet ou fiable à l'API d'École Directe. Elle est principalement destinée à un usage personnel et peut nécessiter des ajustements en cas de modifications dans l'API d'École Directe.
+Veuillez noter que cette bibliothèque est fournie "telle quelle" et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte. Elle est principalement destinée à un usage personnel et peut nécessiter des ajustements en cas de modifications dans l'API d'EcoleDirecte.
 
 ## Contributions
 Les contributions sous forme de pull requests sont les bienvenues. Pour les changements importants, veuillez d'abord ouvrir une issue pour discuter de ce que vous aimeriez changer.
