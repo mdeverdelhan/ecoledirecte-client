@@ -8,11 +8,46 @@
     <artifactId>ecoledirecte-client</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <packaging>jar</packaging>
+
+    <name>ecoledirecte-client</name>
+    <description>Bibliothèque d'interrogation de l'API d'EcoleDirecte</description>
+    <url>http://github.com/mdeverdelhan/ecoledirecte-client</url>
+    <inceptionYear>2024</inceptionYear>
+    <developers>
+        <developer>
+            <name>Marc de Verdelhan</name>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <comments>All source code is under the MIT license.</comments>
+        </license>
+    </licenses>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>http://github.com/mdeverdelhan/ecoledirecte-client/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <url>http://github.com/mdeverdelhan/ecoledirecte-client/actions</url>
+    </ciManagement>
+
+    <scm>
+        <connection>scm:git:https://github.com/mdeverdelhan/ecoledirecte-client.git</connection>
+        <developerConnection>scm:git:https://github.com/mdeverdelhan/ecoledirecte-client.git</developerConnection>
+        <url>http://github.com/mdeverdelhan/ecoledirecte-client</url>
+    </scm>
+
     <properties>
+        <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
 
     <dependencies>
 

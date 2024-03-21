@@ -10,6 +10,8 @@ import eu.verdelhan.ecoledirecte.v3.conseildeclasse.ConseilDeClasse;
 import eu.verdelhan.ecoledirecte.v3.conseildeclasse.GetConseilDeClasseResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.Eleve;
 import eu.verdelhan.ecoledirecte.v3.eleves.GetEleveResponse;
+import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.CoordonneesFamille;
+import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.GetCoordonneesFamilleResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.GetNotesResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.Notes;
 import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.GetVieScolaireResponse;
@@ -18,6 +20,7 @@ import eu.verdelhan.ecoledirecte.v3.login.LoginResponse;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.List;
 
 public class EcoleDirecteClient {
 
@@ -96,6 +99,18 @@ public class EcoleDirecteClient {
 
         GetVieScolaireResponse eleveVsResponse = executeRequest(eleveVsReq, GetVieScolaireResponse.class);
         return eleveVsResponse.getData();
+    }
+
+    public List<CoordonneesFamille> getEleveCoordonneesFamille(String eleveId) throws EcoleDirecteException {
+        checkAuthentication();
+
+        Request eleveCfReq = new Request.Builder()
+                .url(config.getBaseUrl() + "/eleves/" + eleveId + "/coordonneesfamille.awp?verbe=get&")
+                .post(authTokenReqBody)
+                .build();
+
+        GetCoordonneesFamilleResponse eleveCfResponse = executeRequest(eleveCfReq, GetCoordonneesFamilleResponse.class);
+        return eleveCfResponse.getData();
     }
 
     public Eleves getClasseEleves(String classeId) throws EcoleDirecteException {

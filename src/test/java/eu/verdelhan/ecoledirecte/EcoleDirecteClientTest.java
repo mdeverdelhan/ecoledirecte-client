@@ -3,6 +3,7 @@ package eu.verdelhan.ecoledirecte;
 import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
 import eu.verdelhan.ecoledirecte.v3.conseildeclasse.ConseilDeClasse;
 import eu.verdelhan.ecoledirecte.v3.eleves.Eleve;
+import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.CoordonneesFamille;
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.Notes;
 import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.VieScolaire;
 import okhttp3.*;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Base64;
+import java.util.List;
 
 public class EcoleDirecteClientTest {
 
@@ -34,8 +36,8 @@ public class EcoleDirecteClientTest {
 //                .proxyAuthenticator(proxyAuthenticator)
                 .build();
 
-//        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
-//        System.out.println(client.authenticate("foo", "bar").getToken());
+        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
+        System.out.println(client.authenticate("foo", "bar").getToken());
 //
 //        Eleve e = client.getEleve("1100");
 //        System.out.println(e.getDateDeNaissance());
@@ -56,5 +58,8 @@ public class EcoleDirecteClientTest {
 //                    new String(Base64.getMimeDecoder().decode(el.getAppreciationPP().getText()))
 //            );
 //        });
+
+        List<CoordonneesFamille> coordonneesFamilleList = client.getEleveCoordonneesFamille("1100");
+        System.out.println(coordonneesFamilleList.get(0).getResponsable().getMailPerso());
     }
 }
