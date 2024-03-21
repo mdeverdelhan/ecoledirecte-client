@@ -36,8 +36,8 @@ public class EcoleDirecteClientTest {
 //                .proxyAuthenticator(proxyAuthenticator)
                 .build();
 
-        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
-        System.out.println(client.authenticate("foo", "bar").getToken());
+//        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
+//        System.out.println(client.authenticate("foo", "bar").getToken());
 //
 //        Eleve e = client.getEleve("1100");
 //        System.out.println(e.getDateDeNaissance());
@@ -59,7 +59,7 @@ public class EcoleDirecteClientTest {
 //            );
 //        });
 
-        List<CoordonneesFamille> coordonneesFamilleList = client.getEleveCoordonneesFamille("1100");
-        System.out.println(coordonneesFamilleList.get(0).getResponsable().getMailPerso());
+//        List<CoordonneesFamille> coordonneesFamilleList = client.getEleveCoordonneesFamille("1100");
+//        System.out.println(coordonneesFamilleList.get(0).getResponsable().getMailPerso());
     }
 }
