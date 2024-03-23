@@ -34,8 +34,8 @@
     </ciManagement>
 
     <scm>
-        <connection>scm:git:https://github.com/mdeverdelhan/ecoledirecte-client.git</connection>
-        <developerConnection>scm:git:https://github.com/mdeverdelhan/ecoledirecte-client.git</developerConnection>
+        <connection>scm:git:git@github.com:mdeverdelhan/ecoledirecte-client.git</connection>
+        <developerConnection>scm:git:git@github.com:mdeverdelhan/ecoledirecte-client.git</developerConnection>
         <url>http://github.com/mdeverdelhan/ecoledirecte-client</url>
     </scm>
 
@@ -96,7 +96,7 @@
 
         <!-- Only when performing a release (i.e. not for snapshots) -->
         <profile>
-            <id>releases</id>
+            <id>maven-central-release</id>
             <build>
                 <plugins>
 
@@ -156,6 +156,18 @@
                         </executions>
                     </plugin>
 
+                    <!-- See https://central.sonatype.org/publish/publish-portal-maven/ -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.4.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenAuth>true</tokenAuth>
+                        </configuration>
+                    </plugin>
+
                 </plugins>
             </build>
         </profile>
@@ -171,18 +183,14 @@
                 <version>3.2.5</version>
             </plugin>
 
-            <!-- See https://central.sonatype.org/publish/publish-portal-maven/ -->
             <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.4.0</version>
-                <extensions>true</extensions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.1</version>
                 <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <tokenAuth>true</tokenAuth>
+                    <releaseProfiles>maven-central-release</releaseProfiles>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
