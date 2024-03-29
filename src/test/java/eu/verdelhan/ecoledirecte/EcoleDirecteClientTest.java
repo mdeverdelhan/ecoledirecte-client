@@ -37,7 +37,7 @@ public class EcoleDirecteClientTest {
                 .build();
 
 //        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
-//        System.out.println(client.authenticate("foo", "bar").getToken());
+//        System.out.println(client.authenticate("xxx", "yyy").getToken());
 //
 //        Eleve e = client.getEleve("1100");
 //        System.out.println(e.getDateDeNaissance());
@@ -55,10 +55,10 @@ public class EcoleDirecteClientTest {
 //        ConseilDeClasse cc = client.getConseilDeClasse("66", "19", "A001");
 //        cc.getEleves().forEach(el -> {
 //            System.out.println(
-//                    new String(Base64.getMimeDecoder().decode(el.getAppreciationPP().getText()))
+//                    EcoleDirecteUtils.decodeAppreciation(el.getAppreciationPP().getText())
 //            );
 //        });
-
+//
 //        List<CoordonneesFamille> coordonneesFamilleList = client.getEleveCoordonneesFamille("1100");
 //        System.out.println(coordonneesFamilleList.get(0).getResponsable().getMailPerso());
     }
