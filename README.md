@@ -74,7 +74,7 @@ EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
 
 ## À propos d'EcoleDirecte
 
-EcoleDirecte est une plateforme en ligne utilisée par de nombreuses écoles et établissements éducatifs en France. Elle vise à faciliter la communication entre les enseignants, les élèves et les parents. Cette plateforme offre un accès à diverses fonctionnalités telles que la consultation des emplois du temps, la saisie des devoirs, le suivi des notes, les messages entre utilisateurs, etc. Bien que pratique, l'API d'EcoleDirecte présente une structure non standard et qui peut paraitre déroutante (euphémisme). `ecoledirecte-client` a pour but d'aider les développeurs Java à l'interroger.
+EcoleDirecte est une [plateforme](http://www.ecoledirecte.com) en ligne utilisée par de nombreuses écoles et établissements éducatifs en France. Elle vise à faciliter la communication entre les enseignants, les élèves et les parents. Cette plateforme offre un accès à diverses fonctionnalités telles que la consultation des emplois du temps, la saisie des devoirs, le suivi des notes, les messages entre utilisateurs, etc. Bien que pratique, l'API d'EcoleDirecte présente une structure non standard et qui peut paraitre déroutante (euphémisme). `ecoledirecte-client` a pour but d'aider les développeurs Java à l'interroger.
 
 ### Exemples d'appels cURL
 
@@ -95,7 +95,7 @@ curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&' -H 'acce
 
 ## Avertissement
 
-Veuillez noter que cette bibliothèque est principalement destinée à un usage personnel. Elle est donc fournie "telle quelle" et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte. `ecoledirecte-client` ne couvre pas toutes les ressources de l'API d'EcoleDirecte. Elle est peu documentée et ne comporte pas de tests automatisés. Cela est essentiellement du au fait que l'API est conçue pour le site www.ecoledirecte.com exclusivement. Notre bibliothèque peut donc nécessiter des ajustements pour être utilisée.
+Veuillez noter que cette bibliothèque est principalement destinée à un usage personnel. Elle est donc fournie telle quelle ("_as is_") et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte. `ecoledirecte-client` ne couvre pas toutes les ressources de l'API, elle est peu documentée, et ne comporte pas de tests automatisés. Cela est essentiellement du au fait que l'API est conçue pour le site www.ecoledirecte.com exclusivement. Notre bibliothèque peut donc nécessiter des recherches, ajustements ou évolutions pour être utilisée.
 
 ## Contributions
 
@@ -106,5 +106,5 @@ Les contributions sous forme de _pull requests_ sont les bienvenues. Pour les ch
 Adresse Bitcoin : 13BMqpqbzJ62LjMWcPGWrTrdocvGqifdJ3
 
 ## Licence
-Ce projet est distribué sous la licence MIT. Pour plus d'informations, consultez le fichier LICENSE.
+Ce projet est distribué sous la licence MIT. Pour plus d'informations, consultez le fichier [LICENSE](LICENSE).
 
