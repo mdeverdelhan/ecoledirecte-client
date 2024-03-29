@@ -26,7 +26,7 @@
 <dependency>
     <groupId>eu.verdelhan</groupId>
     <artifactId>ecoledirecte-client</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
@@ -97,7 +97,16 @@ curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&' -H 'acce
 
 Veuillez noter que cette bibliothèque est principalement destinée à un usage personnel. Elle est donc fournie telle quelle ("_as is_") et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte. `ecoledirecte-client` ne couvre pas toutes les ressources de l'API, elle est peu documentée, et ne comporte pas de tests automatisés. Cela est essentiellement du au fait que l'API est conçue pour le site www.ecoledirecte.com exclusivement. Notre bibliothèque peut donc nécessiter des recherches, ajustements ou évolutions pour être utilisée.
 
-## Contributions
+## Notes
+
+### Releases
+
+```bash
+mvn release:prepare
+mvn release:perform
+```
+
+### Contributions
 
 Les contributions sous forme de _pull requests_ sont les bienvenues. Pour les changements importants, veuillez d'abord ouvrir une _issue_ pour discuter de ce que vous aimeriez changer ou ajouter.
 
