@@ -7,7 +7,7 @@ import lombok.Getter;
 
 
 @Getter
-public class Class {
+public class Classe {
 
     @Expose
     private String code;

@@ -11,7 +11,7 @@ import lombok.Getter;
 public class Profile {
 
     @Expose
-    private List<Class> classes;
+    private List<Classe> classes;
     @Expose
     private String email;
     @Expose
