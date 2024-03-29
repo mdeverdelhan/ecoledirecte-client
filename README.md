@@ -14,12 +14,13 @@
 ## Fonctionnalités
 
 - Interrogation simplifiée de l'API d'EcoleDirecte.
-- Prise en charge des fonctionnalités de base telles que la récupération des notes, des la vie scolaire, etc.
+- Prise en charge des fonctionnalités de base telles que la récupération des notes, de la vie scolaire, accès enseignant, etc.
 - Facilité d'intégration dans des projets Java existants.
+- Licence MIT
 
 ## Installation
 
-`ecoledirecte-client` est disponible sur Maven Central. Pour l'utiliser dans votre projet vous pouvez l'ajouter comme dépendance dans votre fichier `pom.xml` :
+`ecoledirecte-client` est disponible [sur Maven Central](https://central.sonatype.com/artifact/eu.verdelhan/ecoledirecte-client). Pour l'utiliser dans votre projet vous pouvez l'ajouter comme dépendance dans votre fichier `pom.xml` :
 
 ```xml
 <dependency>
@@ -29,9 +30,9 @@
 </dependency>
 ```
 
-## Utilisation
+## Exemples d'utilisation
 
-Voici un exemple d'utilisation de base :
+### Usage basique (fonctions "enseignant")
 
 ```java
 EcoleDirecteClient client = new EcoleDirecteClient("https://api.ecoledirecte.com/v3");
@@ -51,8 +52,29 @@ System.out.println("Appréciation du professeur principal pour le 1er élève : 
         + new String(Base64.getMimeDecoder().decode(app)));
 ```
 
+### Usage derrière un proxy
+
+```java
+EcoleDirecteApiConfig config = new EcoleDirecteApiConfig("https://api.ecoledirecte.com/v3");
+
+Authenticator proxyAuthenticator = (route, response) -> {
+    String credential = Credentials.basic("abc", "def");
+    return response.request().newBuilder()
+            .header("Proxy-Authorization", credential)
+            .build();
+};
+
+OkHttpClient httpClient = new OkHttpClient.Builder()
+        .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("xyz", 8080)))
+        .proxyAuthenticator(proxyAuthenticator)
+        .build();
+
+EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
+```
+
 ## À propos d'EcoleDirecte
-EcoleDirecte est une plateforme en ligne utilisée par de nombreuses écoles et établissements éducatifs pour faciliter la communication entre les enseignants, les élèves et les parents. Cette plateforme offre un accès à diverses fonctionnalités telles que la consultation des emplois du temps, la saisie des devoirs, le suivi des notes, les messages entre utilisateurs, et bien plus encore. Bien que pratique, l'API d'EcoleDirecte peut présenter des particularités et des limitations, ce qui peut rendre son intégration et son utilisation via des bibliothèques tierces comme ecoledirecte-client un peu plus complexes.
+
+EcoleDirecte est une plateforme en ligne utilisée par de nombreuses écoles et établissements éducatifs en France. Elle vise à faciliter la communication entre les enseignants, les élèves et les parents. Cette plateforme offre un accès à diverses fonctionnalités telles que la consultation des emplois du temps, la saisie des devoirs, le suivi des notes, les messages entre utilisateurs, etc. Bien que pratique, l'API d'EcoleDirecte présente une structure non standard et qui peut paraitre déroutante (euphémisme). `ecoledirecte-client` a pour but d'aider les développeurs Java à l'interroger.
 
 ### Exemples d'appels cURL
 
@@ -73,7 +95,7 @@ curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&' -H 'acce
 
 ## Avertissement
 
-Veuillez noter que cette bibliothèque est fournie "telle quelle" et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte. Elle est principalement destinée à un usage personnel et peut nécessiter des ajustements en cas de modifications dans l'API d'EcoleDirecte.
+Veuillez noter que cette bibliothèque est principalement destinée à un usage personnel. Elle est donc fournie "telle quelle" et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte. `ecoledirecte-client` ne couvre pas toutes les ressources de l'API d'EcoleDirecte. Elle est peu documentée et ne comporte pas de tests automatisés. Cela est essentiellement du au fait que l'API est conçue pour le site www.ecoledirecte.com exclusivement. Notre bibliothèque peut donc nécessiter des ajustements pour être utilisée.
 
 ## Contributions
 
