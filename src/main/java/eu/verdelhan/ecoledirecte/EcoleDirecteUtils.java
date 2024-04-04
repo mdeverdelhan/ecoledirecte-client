@@ -8,14 +8,14 @@ import java.util.Base64;
 public class EcoleDirecteUtils {
 
     /**
-     * @param encodedAppr une appreciation encodee en base 64
-     * @return l'appreciation decodee
+     * @param b64EncodedString une chaine de caractere encodee en base 64
+     * @return la chaine de caracteres decodee
      */
-    public static final String decodeAppreciation(String encodedAppr) {
-        if (encodedAppr == null) {
+    public static final String decodeBase64Text(String b64EncodedString) {
+        if (b64EncodedString == null) {
             return null;
         }
-        return new String(Base64.getMimeDecoder().decode(encodedAppr));
+        return new String(Base64.getMimeDecoder().decode(b64EncodedString));
     }
 
     private EcoleDirecteUtils() {}
