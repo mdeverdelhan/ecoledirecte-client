@@ -10,17 +10,17 @@ import lombok.Getter;
 public class Eleve {
 
     @Expose
-    private AppreciationCE appreciationCE;
+    private Appreciation appreciationCE;
     @Expose
-    private AppreciationCN appreciationCN;
+    private Appreciation appreciationCN;
     @Expose
-    private AppreciationPP appreciationPP;
+    private Appreciation appreciationPP;
     @Expose
-    private AppreciationVS appreciationVS;
+    private Appreciation appreciationVS;
     @Expose
     private Long id;
     @Expose
-    private MentionDuConseil mentionDuConseil;
+    private Appreciation mentionDuConseil;
     @Expose
     private String nom;
     @Expose

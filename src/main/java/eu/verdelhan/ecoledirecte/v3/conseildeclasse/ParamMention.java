@@ -7,16 +7,12 @@ import lombok.Getter;
 
 
 @Getter
-public class AppreciationCN {
+public class ParamMention {
 
     @Expose
-    private String code;
-    @Expose
-    private String date;
-    @Expose
-    private String id;
+    private Long id;
     @Expose
     private String libelle;
     @Expose
-    private String text;
+    private Long numLigne;
 }

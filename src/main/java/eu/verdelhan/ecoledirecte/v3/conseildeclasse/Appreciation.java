@@ -1,8 +1,10 @@
 
 package eu.verdelhan.ecoledirecte.v3.conseildeclasse;
 
+
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
+
 
 @Getter
 public class Appreciation {
@@ -10,9 +12,11 @@ public class Appreciation {
     @Expose
     private String code;
     @Expose
-    private Long id;
+    private String date;
+    @Expose
+    private String id;
     @Expose
     private String libelle;
     @Expose
-    private Long nbCaracteres;
+    private String text;
 }

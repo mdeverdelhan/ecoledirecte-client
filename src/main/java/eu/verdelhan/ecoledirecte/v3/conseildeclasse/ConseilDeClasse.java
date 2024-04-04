@@ -11,7 +11,7 @@ import lombok.Getter;
 public class ConseilDeClasse {
 
     @Expose
-    private AppreciationGenerale appreciationGenerale;
+    private Appreciation appreciationGenerale;
     @Expose
     private List<Eleve> eleves;
     @Expose

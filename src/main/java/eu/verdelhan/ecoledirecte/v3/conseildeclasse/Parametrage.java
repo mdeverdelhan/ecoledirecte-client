@@ -12,11 +12,11 @@ import lombok.Getter;
 public class Parametrage {
 
     @Expose
-    private List<Appreciation> appreciations;
+    private List<ParamAppreciation> appreciations;
     @Expose
     private Long longueurMaxAppPP;
     @Expose
-    private List<Mention> mentions;
+    private List<ParamMention> mentions;
     @SerializedName("PPModifTout")
     private Boolean pPModifTout;
     @SerializedName("PPModifVS")
