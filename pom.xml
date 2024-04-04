@@ -4,7 +4,7 @@
 
     <groupId>eu.verdelhan</groupId>
     <artifactId>ecoledirecte-client</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
 
     <packaging>jar</packaging>
 
@@ -35,7 +35,7 @@
         <connection>scm:git:git@github.com:mdeverdelhan/ecoledirecte-client.git</connection>
         <developerConnection>scm:git:git@github.com:mdeverdelhan/ecoledirecte-client.git</developerConnection>
         <url>http://github.com/mdeverdelhan/ecoledirecte-client</url>
-      <tag>HEAD</tag>
+      <tag>ecoledirecte-client-1.2</tag>
   </scm>
 
     <properties>
