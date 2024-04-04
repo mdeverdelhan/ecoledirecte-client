@@ -2,6 +2,7 @@ package eu.verdelhan.ecoledirecte;
 
 import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
 import eu.verdelhan.ecoledirecte.v3.conseildeclasse.ConseilDeClasse;
+import eu.verdelhan.ecoledirecte.v3.contactetablissement.ContactEtablissement;
 import eu.verdelhan.ecoledirecte.v3.eleves.Eleve;
 import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.CoordonneesFamille;
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.Notes;
@@ -61,5 +62,8 @@ public class EcoleDirecteClientTest {
 //
 //        List<CoordonneesFamille> coordonneesFamilleList = client.getEleveCoordonneesFamille("1100");
 //        System.out.println(coordonneesFamilleList.get(0).getResponsable().getMailPerso());
+//
+//        ContactEtablissement ce = client.getContactEtablissement().get(0);
+//        System.out.println(ce.getEmail());
     }
 }

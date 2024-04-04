@@ -8,6 +8,8 @@ import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
 import eu.verdelhan.ecoledirecte.v3.classes.GetElevesResponse;
 import eu.verdelhan.ecoledirecte.v3.conseildeclasse.ConseilDeClasse;
 import eu.verdelhan.ecoledirecte.v3.conseildeclasse.GetConseilDeClasseResponse;
+import eu.verdelhan.ecoledirecte.v3.contactetablissement.ContactEtablissement;
+import eu.verdelhan.ecoledirecte.v3.contactetablissement.GetContactEtablissementResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.Eleve;
 import eu.verdelhan.ecoledirecte.v3.eleves.GetEleveResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.CoordonneesFamille;
@@ -189,6 +191,21 @@ public class EcoleDirecteClient {
 
         GetConseilDeClasseResponse conseilResponse = executeRequest(conseilReq, GetConseilDeClasseResponse.class);
         return conseilResponse.getData();
+    }
+
+    /**
+     * @return les coordonnees de l'etablissement
+     */
+    public List<ContactEtablissement> getContactEtablissement() throws EcoleDirecteException {
+        checkAuthentication();
+
+        Request ceReq = new Request.Builder()
+                .url(config.getBaseUrl() + "/contactetablissement.awp?verbe=get&")
+                .post(authTokenReqBody)
+                .build();
+
+        GetContactEtablissementResponse ceResponse = executeRequest(ceReq, GetContactEtablissementResponse.class);
+        return ceResponse.getData();
     }
 
     /**
