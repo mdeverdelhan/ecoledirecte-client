@@ -97,7 +97,10 @@ curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&' -H 'acce
 
 Veuillez noter que cette bibliothèque est principalement destinée à un usage personnel. Elle est donc fournie telle quelle ("_as is_") et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte.
 
-`ecoledirecte-client` ne couvre pas toutes les ressources de l'API, elle est peu documentée, et ne comporte pas de tests automatisés. Cela est essentiellement du au fait que l'API est conçue pour le site www.ecoledirecte.com exclusivement. Notre bibliothèque peut donc nécessiter des recherches, ajustements ou évolutions pour être utilisée.
+`ecoledirecte-client` ne couvre pas toutes les ressources de l'API, elle est peu documentée et ne comporte pas de tests automatisés. Cet état de fait découle de la piètre qualité de l'API d'EcoleDirecte (visiblement exclusivement conçue pour le site www.ecoledirecte.com), qui ne respecte pas les normes de l'industrie.
+La documentation limitée et l'absence de tests automatisés dans cette bibliothèque ne sont donc pas le résultat d'une négligence, plutôt d'une décision délibérée fondée sur les lacunes de l'API d'EcoleDirecte (et ma volonté de ne pas les pallier).
+
+`ecoledirecte-client` peut donc nécessiter davantage de recherches, ajustements ou évolutions pour être utilisée.
 
 ## Notes
 
