@@ -13,9 +13,9 @@
 
 ## Fonctionnalités
 
-- Interrogation simplifiée de l'API d'EcoleDirecte.
+- Interrogation simplifiée de l'API d'EcoleDirecte
 - Prise en charge des fonctionnalités de base telles que la récupération des notes, de la vie scolaire, accès enseignant, etc.
-- Facilité d'intégration dans des projets Java existants.
+- Facilité d'intégration dans des projets Java existants (Java 21+)
 - Licence MIT
 
 ## Installation
@@ -26,7 +26,7 @@
 <dependency>
     <groupId>eu.verdelhan</groupId>
     <artifactId>ecoledirecte-client</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ```
 
@@ -95,7 +95,9 @@ curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&' -H 'acce
 
 ## Avertissement
 
-Veuillez noter que cette bibliothèque est principalement destinée à un usage personnel. Elle est donc fournie telle quelle ("_as is_") et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte. `ecoledirecte-client` ne couvre pas toutes les ressources de l'API, elle est peu documentée, et ne comporte pas de tests automatisés. Cela est essentiellement du au fait que l'API est conçue pour le site www.ecoledirecte.com exclusivement. Notre bibliothèque peut donc nécessiter des recherches, ajustements ou évolutions pour être utilisée.
+Veuillez noter que cette bibliothèque est principalement destinée à un usage personnel. Elle est donc fournie telle quelle ("_as is_") et ne garantit pas un accès complet ou fiable à l'API d'EcoleDirecte.
+
+`ecoledirecte-client` ne couvre pas toutes les ressources de l'API, elle est peu documentée, et ne comporte pas de tests automatisés. Cela est essentiellement du au fait que l'API est conçue pour le site www.ecoledirecte.com exclusivement. Notre bibliothèque peut donc nécessiter des recherches, ajustements ou évolutions pour être utilisée.
 
 ## Notes
 
