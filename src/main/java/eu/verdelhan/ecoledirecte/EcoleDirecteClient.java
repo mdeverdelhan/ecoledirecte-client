@@ -18,6 +18,8 @@ import eu.verdelhan.ecoledirecte.v3.eleves.notes.GetNotesResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.Notes;
 import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.GetVieScolaireResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.VieScolaire;
+import eu.verdelhan.ecoledirecte.v3.familledocuments.Documents;
+import eu.verdelhan.ecoledirecte.v3.familledocuments.GetFamilleDocumentsResponse;
 import eu.verdelhan.ecoledirecte.v3.login.LoginResponse;
 import okhttp3.*;
 
@@ -75,7 +77,8 @@ public class EcoleDirecteClient {
      */
     public LoginResponse authenticate(String id, String password) throws EcoleDirecteException {
 
-        String authStr = "{ \"identifiant\": \"" + id + "\" , \"motdepasse\": \"" + password + "\" }";
+        String authStr = "{ \"identifiant\": \"" + id
+                + "\" , \"motdepasse\": \"" + password + "\" }";
         RequestBody body = new FormBody.Builder().add("data", authStr).build();
         Request loginReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/login.awp")
@@ -206,6 +209,21 @@ public class EcoleDirecteClient {
 
         GetContactEtablissementResponse ceResponse = executeRequest(ceReq, GetContactEtablissementResponse.class);
         return ceResponse.getData();
+    }
+
+    /**
+     * @return les documents pour la famille
+     */
+    public Documents getFamilleDocuments() throws EcoleDirecteException {
+        checkAuthentication();
+
+        Request fdReq = new Request.Builder()
+                .url(config.getBaseUrl() + "/familledocuments.awp?verbe=get&")
+                .post(authTokenReqBody)
+                .build();
+
+        GetFamilleDocumentsResponse fdResponse = executeRequest(fdReq, GetFamilleDocumentsResponse.class);
+        return fdResponse.getData();
     }
 
     /**
