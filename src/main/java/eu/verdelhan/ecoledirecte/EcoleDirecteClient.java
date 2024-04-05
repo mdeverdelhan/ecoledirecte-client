@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteAuthException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteParseException;
+import eu.verdelhan.ecoledirecte.v3.boutique.paiementsenligne.GetPaiementsEnLigneResponse;
+import eu.verdelhan.ecoledirecte.v3.boutique.paiementsenligne.GroupeDePaiements;
 import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
 import eu.verdelhan.ecoledirecte.v3.classes.GetElevesResponse;
 import eu.verdelhan.ecoledirecte.v3.conseildeclasse.ConseilDeClasse;
@@ -224,6 +226,21 @@ public class EcoleDirecteClient {
 
         GetFamilleDocumentsResponse fdResponse = executeRequest(fdReq, GetFamilleDocumentsResponse.class);
         return fdResponse.getData();
+    }
+
+    /**
+     * @return les paiements en ligne pour la famille
+     */
+    public List<GroupeDePaiements> getPaiementsEnLigne() throws EcoleDirecteException {
+        checkAuthentication();
+
+        Request gdpReq = new Request.Builder()
+                .url(config.getBaseUrl() + "/boutique/paiementsenligne.awp?verbe=get&")
+                .post(authTokenReqBody)
+                .build();
+
+        GetPaiementsEnLigneResponse gdpResponse = executeRequest(gdpReq, GetPaiementsEnLigneResponse.class);
+        return gdpResponse.getData();
     }
 
     /**
