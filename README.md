@@ -26,7 +26,7 @@
 <dependency>
     <groupId>eu.verdelhan</groupId>
     <artifactId>ecoledirecte-client</artifactId>
-    <version>1.2</version>
+    <version>1.3</version>
 </dependency>
 ```
 
