@@ -4,6 +4,10 @@ import com.google.gson.Gson;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteAuthException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteParseException;
+import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.DoubleAuthCnCv;
+import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.DoubleAuthQuestion;
+import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.GetDoubleAuthQuestionResponse;
+import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.PostDoubleAuthChoixResponse;
 import eu.verdelhan.ecoledirecte.v3.boutique.paiementsenligne.GetPaiementsEnLigneResponse;
 import eu.verdelhan.ecoledirecte.v3.boutique.paiementsenligne.GroupeDePaiements;
 import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
@@ -22,11 +26,12 @@ import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.GetVieScolaireResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.VieScolaire;
 import eu.verdelhan.ecoledirecte.v3.familledocuments.Documents;
 import eu.verdelhan.ecoledirecte.v3.familledocuments.GetFamilleDocumentsResponse;
-import eu.verdelhan.ecoledirecte.v3.login.LoginResponse;
+import eu.verdelhan.ecoledirecte.v3.auth.login.LoginResponse;
+import lombok.Getter;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 /**
  * Client EcoleDirecte
@@ -42,8 +47,17 @@ public class EcoleDirecteClient {
     /** Instance GSON */
     private final Gson gson;
 
-    /** Request body comportant le jeton d'authentification */
-    private RequestBody authTokenReqBody;
+    /** Jeton d'authentification */
+    @Getter
+    private String authToken;
+    /** True si le client est pleinement authentifie, false sinon */
+    @Getter
+    private boolean fullyAuthenticated = false;
+
+    /** Nom de l'en-tete HTTP pour le jeton d'authentification */
+    private static final String AUTH_TOKEN_HEADER_NAME = "X-Token";
+    /** Request body vide */
+    private static final RequestBody EMPTY_DATA_REQUEST_BODY = new FormBody.Builder().add("data", "{}").build();
 
     /**
      * @param baseUrl URL de la base de l'API EcoleDirecte (ex : https://api.ecoledirecte.com/v3)
@@ -78,25 +92,82 @@ public class EcoleDirecteClient {
      * @return la reponse du login a l'API EcoleDirecte
      */
     public LoginResponse authenticate(String id, String password) throws EcoleDirecteException {
+        return authenticate(id, password, null);
+    }
 
-        String authStr = "{ \"identifiant\": \"" + id
-                + "\" , \"motdepasse\": \"" + password + "\" }";
-        RequestBody body = new FormBody.Builder().add("data", authStr).build();
+    /**
+     * Authentification du client.
+     * @param id identifiant utilisateur EcoleDirecte
+     * @param password mot de passe EcoleDirecte
+     * @param cncv la validation de la double authentification
+     * @return la reponse du login a l'API EcoleDirecte
+     */
+    public LoginResponse authenticate(String id, String password, DoubleAuthCnCv cncv) throws EcoleDirecteException {
+
+        RequestBody body = buildLoginRequestBody(id, password, cncv);
         Request loginReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/login.awp")
                 .post(body)
                 .build();
 
-        try {
-            LoginResponse loginResponse = executeRequest(loginReq, LoginResponse.class);
-            authTokenReqBody = new FormBody.Builder()
-                    .add("data", "{ \"token\": \"" + loginResponse.getToken() + "\" }")
-                    .build();
-            return loginResponse;
-        } catch (EcoleDirecteException ede) {
-            throw new EcoleDirecteAuthException("Failed login", ede);
+        LoginResponse loginResponse = executeRequest(loginReq, LoginResponse.class);
+        if (loginResponse == null) {
+            throw new EcoleDirecteAuthException("Failed login (null response)");
         }
 
+        if (loginResponse.getCode() == 200) {
+            // Authentification complete OK
+            authToken = loginResponse.getToken();
+            fullyAuthenticated = true;
+        } else if (loginResponse.getCode() == 250) {
+            // Recuperation du jeton mais besoin d'une double authentification
+            authToken = loginResponse.getToken();
+            fullyAuthenticated = false;
+        } else {
+            // Authentification echouee
+            authToken = null;
+            fullyAuthenticated = false;
+            throw new EcoleDirecteAuthException("Failed login - Response: " + loginResponse);
+        }
+
+        return loginResponse;
+    }
+
+    /**
+     * @return la question de double authentification
+     */
+    public DoubleAuthQuestion getDoubleAuthQuestion() throws EcoleDirecteException {
+        checkAuthenticationToken();
+
+        Request doubleAuthQuestionReq = new Request.Builder()
+                .url(config.getBaseUrl() + "/connexion/doubleauth.awp?verbe=get&")
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
+                .build();
+
+        GetDoubleAuthQuestionResponse doubleAuthQuestionResp = executeRequest(doubleAuthQuestionReq, GetDoubleAuthQuestionResponse.class);
+        return doubleAuthQuestionResp.getData();
+    }
+
+    /**
+     * Poste la reponse a la question de double authentification
+     * @param reponse la reponse (en base64) de la question de double authentification
+     * @return l'objet de validation (cncv) de la double authentification
+     */
+    public DoubleAuthCnCv postDoubleAuthReponse(String reponse) throws EcoleDirecteException {
+        checkAuthenticationToken();
+
+        RequestBody choiceBody = new FormBody.Builder()
+                .add("data", "{ \"choix\": \"" + reponse + "\" }")
+                .build();
+        Request doubleAuthReponseReq = new Request.Builder()
+                .url(config.getBaseUrl() + "/connexion/doubleauth.awp?verbe=post&")
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(choiceBody)
+                .build();
+
+        PostDoubleAuthChoixResponse doubleAuthChoixResp = executeRequest(doubleAuthReponseReq, PostDoubleAuthChoixResponse.class);
+        return doubleAuthChoixResp.getData();
     }
 
     /**
@@ -104,11 +175,12 @@ public class EcoleDirecteClient {
      * @return l'eleve correspondant a eleveId
      */
     public Eleve getEleve(String eleveId) throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request eleveReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/eleves/" + eleveId + ".awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetEleveResponse eleveResponse = executeRequest(eleveReq, GetEleveResponse.class);
@@ -120,11 +192,12 @@ public class EcoleDirecteClient {
      * @return les notes de l'eleve correspondant a eleveId
      */
     public Notes getEleveNotes(String eleveId) throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request eleveNotesReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/eleves/" + eleveId + "/notes.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetNotesResponse eleveNotesResponse = executeRequest(eleveNotesReq, GetNotesResponse.class);
@@ -136,11 +209,12 @@ public class EcoleDirecteClient {
      * @return la vie scolaire (absences, etc.) de l'eleve correspondant a eleveId
      */
     public VieScolaire getEleveVieScolaire(String eleveId) throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request eleveVsReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/eleves/" + eleveId + "/viescolaire.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetVieScolaireResponse eleveVsResponse = executeRequest(eleveVsReq, GetVieScolaireResponse.class);
@@ -152,11 +226,12 @@ public class EcoleDirecteClient {
      * @return les coordonnees des familles de l'eleve correspondant a eleveId
      */
     public List<CoordonneesFamille> getEleveCoordonneesFamille(String eleveId) throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request eleveCfReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/eleves/" + eleveId + "/coordonneesfamille.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetCoordonneesFamilleResponse eleveCfResponse = executeRequest(eleveCfReq, GetCoordonneesFamilleResponse.class);
@@ -168,11 +243,12 @@ public class EcoleDirecteClient {
      * @return les eleves de la classe correspondant a classeId
      */
     public Eleves getClasseEleves(String classeId) throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request classeElevesReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/classes/" + classeId + "/eleves.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetElevesResponse classeElevesResponse = executeRequest(classeElevesReq, GetElevesResponse.class);
@@ -186,12 +262,13 @@ public class EcoleDirecteClient {
      * @return le conseil de la classe classeId, de l'enseignant enseignantId, pour la periode periodeId
      */
     public ConseilDeClasse getConseilDeClasse(String enseignantId, String classeId, String periodeId) throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request conseilReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/enseignants/" + enseignantId
                         + "/C/" + classeId + "/periodes/" + periodeId + "/conseilDeClasse.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetConseilDeClasseResponse conseilResponse = executeRequest(conseilReq, GetConseilDeClasseResponse.class);
@@ -202,11 +279,12 @@ public class EcoleDirecteClient {
      * @return les coordonnees de l'etablissement
      */
     public List<ContactEtablissement> getContactEtablissement() throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request ceReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/contactetablissement.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetContactEtablissementResponse ceResponse = executeRequest(ceReq, GetContactEtablissementResponse.class);
@@ -217,11 +295,12 @@ public class EcoleDirecteClient {
      * @return les documents pour la famille
      */
     public Documents getFamilleDocuments() throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request fdReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/familledocuments.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetFamilleDocumentsResponse fdResponse = executeRequest(fdReq, GetFamilleDocumentsResponse.class);
@@ -232,11 +311,12 @@ public class EcoleDirecteClient {
      * @return les paiements en ligne pour la famille
      */
     public List<GroupeDePaiements> getPaiementsEnLigne() throws EcoleDirecteException {
-        checkAuthentication();
+        checkFullyAuthenticated();
 
         Request gdpReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/boutique/paiementsenligne.awp?verbe=get&")
-                .post(authTokenReqBody)
+                .header(AUTH_TOKEN_HEADER_NAME, authToken)
+                .post(EMPTY_DATA_REQUEST_BODY)
                 .build();
 
         GetPaiementsEnLigneResponse gdpResponse = executeRequest(gdpReq, GetPaiementsEnLigneResponse.class);
@@ -244,12 +324,55 @@ public class EcoleDirecteClient {
     }
 
     /**
-     * Verifie l'authentification du client.
-     * @throws EcoleDirecteException en cas de client non authentifie
+     * @param id l'identifiant de connexion
+     * @param password le mot de passe de connexion
+     * @param cncv la validation de la double authentification
+     * @return le corps de la requete de login
      */
-    protected void checkAuthentication() throws EcoleDirecteException {
-        if (authTokenReqBody == null) {
+    protected RequestBody buildLoginRequestBody(String id, String password, DoubleAuthCnCv cncv) {
+
+        Map<String, Object> rootMap = new HashMap<>();
+        rootMap.put("identifiant", id);
+        rootMap.put("motdepasse", password);
+        rootMap.put("isReLogin", false);
+        rootMap.put("uuid", "");
+
+        if (cncv != null) {
+            // cn & cn (double authentification)
+            Map<String, String> cncvMap = new HashMap<>();
+            if (cncv.getCn() != null && !cncv.getCn().isEmpty()) {
+                cncvMap.put("cn", cncv.getCn());
+            }
+            if (cncv.getCv() != null && !cncv.getCv().isEmpty()) {
+                cncvMap.put("cv", cncv.getCv());
+            }
+            if (!cncvMap.isEmpty()) {
+                rootMap.put("fa", Set.of(cncvMap));
+            }
+        }
+
+        String authString = gson.toJson(rootMap);
+        return new FormBody.Builder().add("data", authString).build();
+    }
+
+    /**
+     * Verifie la presence d'un jeton d'authentification
+     * @throws EcoleDirecteException en cas d'absence du jeton d'authentification
+     */
+    protected void checkAuthenticationToken() throws EcoleDirecteException {
+        if (Objects.isNull(authToken) || authToken.isBlank()) {
             throw new EcoleDirecteException("Unauthenticated");
+        }
+    }
+
+    /**
+     * Verifie que l'authentification complete du client a bien eu lieu.
+     * @throws EcoleDirecteException en cas d'absence d'authentification
+     */
+    protected void checkFullyAuthenticated() throws EcoleDirecteException {
+        checkAuthenticationToken();
+        if (!fullyAuthenticated) {
+            throw new EcoleDirecteException("Not fully authenticated");
         }
     }
 

@@ -1,5 +1,5 @@
 
-package eu.verdelhan.ecoledirecte.v3.login;
+package eu.verdelhan.ecoledirecte.v3.auth.login;
 
 
 import com.google.gson.annotations.Expose;

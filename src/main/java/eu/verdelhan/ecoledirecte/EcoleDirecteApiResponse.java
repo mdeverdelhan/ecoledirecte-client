@@ -4,9 +4,11 @@ package eu.verdelhan.ecoledirecte;
 
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
+import lombok.ToString;
 
 
 @Getter
+@ToString
 public class EcoleDirecteApiResponse<T> {
 
     @Expose

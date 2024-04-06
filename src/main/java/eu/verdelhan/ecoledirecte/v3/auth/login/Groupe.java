@@ -1,19 +1,22 @@
 
-package eu.verdelhan.ecoledirecte.v3.login;
+package eu.verdelhan.ecoledirecte.v3.auth.login;
 
+import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import lombok.Getter;
 
 
 @Getter
-public class Matiere {
+public class Groupe {
 
+    @Expose
+    private List<String> classes;
     @Expose
     private String code;
     @Expose
     private Long id;
     @Expose
     private String libelle;
-    
+
 }
