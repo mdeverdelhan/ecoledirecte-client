@@ -4,6 +4,10 @@ Toutes les modifications notables apportées à `ecoledirecte-client` sont docum
 
 ## [Non publié]
 
+- Prise en compte de la double authentification `doubleauth`
+- Déplacement des APIs d'authentification dans le package `auth`
+- Ajout de l'API `paiementsenligne`
+- Ajout de l'API `familledocuments`
 
 ## [1.2] - 2024-04-04
 
