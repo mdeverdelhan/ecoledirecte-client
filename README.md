@@ -115,10 +115,6 @@ mvn release:perform
 
 Les contributions sous forme de _pull requests_ sont les bienvenues. Pour les changements importants, veuillez d'abord ouvrir une _issue_ pour discuter de ce que vous aimeriez changer ou ajouter.
 
-### Donations
-
-Adresse Bitcoin : 13BMqpqbzJ62LjMWcPGWrTrdocvGqifdJ3
-
 ## Licence
 Ce projet est distribué sous la licence MIT. Pour plus d'informations, consultez le fichier [LICENSE](LICENSE).
 
