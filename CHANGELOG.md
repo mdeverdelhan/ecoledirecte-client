@@ -4,7 +4,7 @@ Toutes les modifications notables apportées à `ecoledirecte-client` sont docum
 
 ## [Non publié]
 
-- Ajout de la version du site EcoleDirecte dans `EcoleDirecteConfig`
+- Ajout de la version du site EcoleDirecte dans `EcoleDirecteApiConfig`
 - Mise à jour de dépendances
 - Mise à jour de l'authentification (pour prise en compte des cookies GTK)
   
