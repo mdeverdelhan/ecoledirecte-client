@@ -26,7 +26,7 @@
 <dependency>
     <groupId>eu.verdelhan</groupId>
     <artifactId>ecoledirecte-client</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
 </dependency>
 ```
 
@@ -81,7 +81,12 @@ EcoleDirecte est une [plateforme](http://www.ecoledirecte.com) en ligne utilisé
 ```bash
 
 # Login / authentification
-curl 'https://api.ecoledirecte.com/v3/login.awp' -H 'Accept: application/json, text/plain, */*' -H 'Content-Type: application/x-www-form-urlencoded' --data $'data={\n "identifiant": "unIdentifiant", "motdepasse": "unMotDePasse"\n}'
+curl 'https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=4.81.0' # Recuperation des cookies GTK (en-tetes)
+curl 'https://api.ecoledirecte.com/v3/login.awp' \
+  -X POST \
+  -H 'X-GTK: ABCDEF123456' \
+  -H 'Cookie: GTK=ABCDEF123456; 789xyzfoo456bar=ABCDEF123456' \
+  --data-raw $'data={\n "identifiant": "unIdentifiant", "motdepasse": "unMotDePasse"\n}'
 
 # Récupération des élèves de la classe 15
 curl 'https://api.ecoledirecte.com/v3/classes/15/eleves.awp?verbe=get&' -H 'Accept: application/json, text/plain, */*' -H 'Content-Type: application/x-www-form-urlencoded' --data $'data={\n "token": "token-d-authentification-obtenu-via-login"\n}'
