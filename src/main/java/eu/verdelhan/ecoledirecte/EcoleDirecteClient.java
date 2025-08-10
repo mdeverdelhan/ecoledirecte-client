@@ -99,7 +99,7 @@ public class EcoleDirecteClient {
 
         // Execution de la requete GET de login pour recuperation des cookies GTK
         Request loginGtkCookieReq = new Request.Builder()
-                .url(config.getBaseUrl() + "/login.awp?gtk=1&v=4.81.0")
+                .url(config.getBaseUrl() + "/login.awp?gtk=1&v=" + config.getVersionSiteEcoleDirecte())
                 .get()
                 .build();
         List<String> cookieStrings;
