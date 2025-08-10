@@ -4,6 +4,10 @@ Toutes les modifications notables apportées à `ecoledirecte-client` sont docum
 
 ## [Non publié]
 
+- Ajout de la version du site EcoleDirecte dans `EcoleDirecteConfig`
+- Mise à jour de dépendances
+- Mise à jour de l'authentification (pour prise en compte des cookies GTK)
+  
 ## [1.3] - 2024-04-06
 
 - Prise en compte de la double authentification `doubleauth`
