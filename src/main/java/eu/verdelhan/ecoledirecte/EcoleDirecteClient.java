@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteAuthException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteParseException;
+import eu.verdelhan.ecoledirecte.v3.auth.GtkCookies;
 import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.DoubleAuthCnCv;
 import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.DoubleAuthQuestion;
 import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.GetDoubleAuthQuestionResponse;
@@ -47,6 +48,10 @@ public class EcoleDirecteClient {
     /** Instance GSON */
     private final Gson gson;
 
+    /** Cookies GTK */
+    @Getter
+    private GtkCookies gtkCookies;
+
     /** Jeton d'authentification */
     @Getter
     private String authToken;
@@ -56,6 +61,7 @@ public class EcoleDirecteClient {
 
     /** Nom de l'en-tete HTTP pour le jeton d'authentification */
     private static final String AUTH_TOKEN_HEADER_NAME = "X-Token";
+
     /** Request body vide */
     private static final RequestBody EMPTY_DATA_REQUEST_BODY = new FormBody.Builder().add("data", "{}").build();
 
@@ -86,12 +92,64 @@ public class EcoleDirecteClient {
     }
 
     /**
+     * Initialise le client avec les cookies GTK.
+     * @return la paire de cookies GTK
+     */
+    public GtkCookies initLoginGtkCookies() throws EcoleDirecteException {
+
+        // Execution de la requete GET de login pour recuperation des cookies GTK
+        Request loginGtkCookieReq = new Request.Builder()
+                .url(config.getBaseUrl() + "/login.awp?gtk=1&v=4.81.0")
+                .get()
+                .build();
+        List<String> cookieStrings;
+        try (Response response = httpClient.newCall(loginGtkCookieReq).execute()) {
+            if (!response.isSuccessful()) {
+                throw new EcoleDirecteException("Failed request - Response: " + response.message() + " (CODE="+response.code()+")");
+            }
+            cookieStrings = response.headers("set-cookie");
+        } catch (IOException ioe) {
+            throw new EcoleDirecteException("Failed request", ioe);
+        }
+
+        // Recuperation premier cookie GTK
+        Optional<String> gtkCookieStrOpt = cookieStrings.stream()
+                .filter(Objects::nonNull)
+                .filter(c -> c.startsWith("GTK="))
+                .findFirst()
+                .map(c -> c.split(";", 2)[0].substring("GTK=".length()));
+        if (gtkCookieStrOpt.isEmpty()) {
+            throw new EcoleDirecteException("GTK cookie header not found");
+        }
+        String gtkCookieStr = gtkCookieStrOpt.get();
+
+        // Recuperation second cookie GTK
+        Optional<String> secondCookieStrOpt = cookieStrings.stream()
+                .filter(Objects::nonNull)
+                .filter(c -> !c.startsWith("GTK="))
+                .filter(c -> c.contains(gtkCookieStr))
+                .findFirst()
+                .map(c -> c.split(";", 2)[0]);
+        if (secondCookieStrOpt.isEmpty()) {
+            throw new EcoleDirecteException("Second cookie header not found");
+        }
+        String secondCookieStr = secondCookieStrOpt.get();
+
+        gtkCookies = new GtkCookies(
+                gtkCookieStr,
+                "GTK=" + gtkCookieStr + "; " + secondCookieStr
+        );
+        return gtkCookies;
+    }
+
+    /**
      * Authentification du client.
      * @param id identifiant utilisateur EcoleDirecte
      * @param password mot de passe EcoleDirecte
      * @return la reponse du login a l'API EcoleDirecte
      */
     public LoginResponse authenticate(String id, String password) throws EcoleDirecteException {
+        initLoginGtkCookies();
         return authenticate(id, password, null);
     }
 
@@ -103,10 +161,13 @@ public class EcoleDirecteClient {
      * @return la reponse du login a l'API EcoleDirecte
      */
     public LoginResponse authenticate(String id, String password, DoubleAuthCnCv cncv) throws EcoleDirecteException {
+        checkGtkCookies();
 
         RequestBody body = buildLoginRequestBody(id, password, cncv);
         Request loginReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/login.awp")
+                .addHeader("X-GTK", gtkCookies.getGtkCookieString())
+                .addHeader("Cookie", gtkCookies.getSecondCookieString())
                 .post(body)
                 .build();
 
@@ -334,8 +395,8 @@ public class EcoleDirecteClient {
         Map<String, Object> rootMap = new HashMap<>();
         rootMap.put("identifiant", id);
         rootMap.put("motdepasse", password);
-        rootMap.put("isReLogin", false);
-        rootMap.put("uuid", "");
+        // rootMap.put("isReLogin", false);
+        // rootMap.put("uuid", "");
 
         if (cncv != null) {
             // cn & cn (double authentification)
@@ -353,6 +414,16 @@ public class EcoleDirecteClient {
 
         String authString = gson.toJson(rootMap);
         return new FormBody.Builder().add("data", authString).build();
+    }
+
+    /**
+     * Vérifie la présence des cookies GTK
+     * @throws EcoleDirecteException en cas d'absence des cookies GTK
+     */
+    protected void checkGtkCookies() throws EcoleDirecteException {
+        if (Objects.isNull(gtkCookies)) {
+            throw new EcoleDirecteException("GTK cookies are missing");
+        }
     }
 
     /**
