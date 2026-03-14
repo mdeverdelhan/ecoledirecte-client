@@ -26,7 +26,7 @@
 <dependency>
     <groupId>eu.verdelhan</groupId>
     <artifactId>ecoledirecte-client</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
 </dependency>
 ```
 
@@ -38,7 +38,7 @@
 EcoleDirecteClient client = new EcoleDirecteClient("https://api.ecoledirecte.com/v3");
         
 // Authentification
-LoginResponse login = client.authenticate("xxxx", "yyyy");
+EcoleDirecteApiResponse<Login> login = client.authenticate("xxxx", "yyyy");
 System.out.println("Jeton : " + login.getToken());
 
 // Récupération de l'élève 1337
@@ -81,7 +81,7 @@ EcoleDirecte est une [plateforme](http://www.ecoledirecte.com) en ligne utilisé
 ```bash
 
 # Login / authentification
-curl 'https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=4.81.0' # Recuperation des cookies GTK (en-tetes)
+curl 'https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=4.96.3' # Recuperation des cookies GTK (en-tetes)
 curl 'https://api.ecoledirecte.com/v3/login.awp' \
   -X POST \
   -H 'X-GTK: ABCDEF123456' \
