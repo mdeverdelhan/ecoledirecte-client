@@ -11,7 +11,7 @@ public class EcoleDirecteUtils {
      * @param b64EncodedString une chaine de caractere encodee en base 64
      * @return la chaine de caracteres decodee
      */
-    public static final String decodeBase64Text(String b64EncodedString) {
+    public static String decodeBase64Text(String b64EncodedString) {
         if (b64EncodedString == null) {
             return null;
         }

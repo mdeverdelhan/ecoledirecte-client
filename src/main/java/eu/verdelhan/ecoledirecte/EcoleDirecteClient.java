@@ -1,6 +1,7 @@
 package eu.verdelhan.ecoledirecte;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteAuthException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteParseException;
@@ -476,7 +477,15 @@ public class EcoleDirecteClient {
             throw new EcoleDirecteParseException("Cannot parse null response or null-body response");
         }
         try {
-            return gson.fromJson(httpResponse.body().string(), clazz);
+            String responseBody = httpResponse.body().string();
+            JsonObject responseAsJsonObject = gson.fromJson(responseBody, JsonObject.class);
+            T parsedResponse = gson.fromJson(responseAsJsonObject, clazz);
+
+            if (parsedResponse instanceof EcoleDirecteApiResponse<?> apiResp) {
+                apiResp.setRawData(responseAsJsonObject.get("data"));
+            }
+
+            return parsedResponse;
         } catch (IOException ioe) {
             throw new EcoleDirecteParseException("Error parsing HTTP response", ioe);
         }

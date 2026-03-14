@@ -2,8 +2,11 @@
 package eu.verdelhan.ecoledirecte;
 
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.Expose;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 
@@ -17,6 +20,8 @@ public class EcoleDirecteApiResponse<T> {
     private String host;
     @Expose
     private T data;
+    @Setter(AccessLevel.PACKAGE)
+    private JsonElement rawData;
     @Expose
     private String message;
     @Expose
