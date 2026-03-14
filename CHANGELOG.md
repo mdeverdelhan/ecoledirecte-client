@@ -4,6 +4,8 @@ Toutes les modifications notables apportées à `ecoledirecte-client` sont docum
 
 ## [Non publié]
 
+- Ajout d'un champ JSON `rawData` à `EcoleDirecteApiResponse`
+
 ## [1.4] - 2025-08-10
 
 - Ajout de la version du site EcoleDirecte dans `EcoleDirecteApiConfig`
