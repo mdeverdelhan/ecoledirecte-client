@@ -11,5 +11,5 @@ public class EcoleDirecteApiConfig {
 
     private final String baseUrl;
 
-    private String versionSiteEcoleDirecte = "4.81.0";
+    private String versionSiteEcoleDirecte = "4.96.3";
 }
