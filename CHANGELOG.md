@@ -4,10 +4,14 @@ Toutes les modifications notables apportées à `ecoledirecte-client` sont docum
 
 ## [Non publié]
 
+## [1.5] - 2026-03-15
+
 - Ajout d'un champ JSON `rawData` à `EcoleDirecteApiResponse`
 - Ajout de méthodes `buildAuthenticatedPostRequest` pour factorisation de la construction des requêtes
 - Mise à jour de la version du site EcoleDirecte
 - Suppression des spécialisations de `EcoleDirecteApiResponse`
+- Duplication des méthodes du client pour accès à la réponse complète de l'API
+- Mise à jour de dépendances
 
 ## [1.4] - 2025-08-10
 
