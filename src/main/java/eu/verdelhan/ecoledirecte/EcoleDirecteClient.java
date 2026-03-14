@@ -188,9 +188,9 @@ public class EcoleDirecteClient {
     }
 
     /**
-     * @return la question de double authentification
+     * @return la reponse complete contenant la question de double authentification
      */
-    public EcoleDirecteApiResponse<DoubleAuthQuestion> getDoubleAuthQuestion() throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<DoubleAuthQuestion> getDoubleAuthQuestionResponse() throws EcoleDirecteException {
         checkAuthenticationToken();
 
         Request request = buildAuthenticatedPostRequest("/connexion/doubleauth.awp?verbe=get&");
@@ -199,11 +199,18 @@ public class EcoleDirecteClient {
     }
 
     /**
+     * @return la question de double authentification
+     */
+    public DoubleAuthQuestion getDoubleAuthQuestion() throws EcoleDirecteException {
+        return getDoubleAuthQuestionResponse().getData();
+    }
+
+    /**
      * Poste la reponse a la question de double authentification
      * @param reponse la reponse (en base64) de la question de double authentification
-     * @return l'objet de validation (cncv) de la double authentification
+     * @return la reponse complete contenant l'objet de validation (cncv) de la double authentification
      */
-    public EcoleDirecteApiResponse<DoubleAuthCnCv> postDoubleAuthReponse(String reponse) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<DoubleAuthCnCv> postDoubleAuthReponseResponse(String reponse) throws EcoleDirecteException {
         checkAuthenticationToken();
 
         RequestBody choiceBody = new FormBody.Builder()
@@ -219,10 +226,19 @@ public class EcoleDirecteClient {
     }
 
     /**
-     * @param eleveId un identifiant d'eleve (ex : 42)
-     * @return l'eleve correspondant a eleveId
+     * Poste la reponse a la question de double authentification
+     * @param reponse la reponse (en base64) de la question de double authentification
+     * @return l'objet de validation (cncv) de la double authentification
      */
-    public EcoleDirecteApiResponse<Eleve> getEleve(String eleveId) throws EcoleDirecteException {
+    public DoubleAuthCnCv postDoubleAuthReponse(String reponse) throws EcoleDirecteException {
+        return postDoubleAuthReponseResponse(reponse).getData();
+    }
+
+    /**
+     * @param eleveId un identifiant d'eleve (ex : 42)
+     * @return la reponse complete contenant l'eleve correspondant a eleveId
+     */
+    public EcoleDirecteApiResponse<Eleve> getEleveResponse(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + ".awp?verbe=get&");
@@ -232,9 +248,17 @@ public class EcoleDirecteClient {
 
     /**
      * @param eleveId un identifiant d'eleve (ex : 42)
-     * @return les notes de l'eleve correspondant a eleveId
+     * @return l'eleve correspondant a eleveId
      */
-    public EcoleDirecteApiResponse<Notes> getEleveNotes(String eleveId) throws EcoleDirecteException {
+    public Eleve getEleve(String eleveId) throws EcoleDirecteException {
+        return getEleveResponse(eleveId).getData();
+    }
+
+    /**
+     * @param eleveId un identifiant d'eleve (ex : 42)
+     * @return la reponse complete contenant les notes de l'eleve correspondant a eleveId
+     */
+    public EcoleDirecteApiResponse<Notes> getEleveNotesResponse(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/notes.awp?verbe=get&");
@@ -244,9 +268,17 @@ public class EcoleDirecteClient {
 
     /**
      * @param eleveId un identifiant d'eleve (ex : 42)
-     * @return la vie scolaire (absences, etc.) de l'eleve correspondant a eleveId
+     * @return les notes de l'eleve correspondant a eleveId
      */
-    public EcoleDirecteApiResponse<VieScolaire> getEleveVieScolaire(String eleveId) throws EcoleDirecteException {
+    public Notes getEleveNotes(String eleveId) throws EcoleDirecteException {
+        return getEleveNotesResponse(eleveId).getData();
+    }
+
+    /**
+     * @param eleveId un identifiant d'eleve (ex : 42)
+     * @return la reponse complete contenant la vie scolaire (absences, etc.) de l'eleve correspondant a eleveId
+     */
+    public EcoleDirecteApiResponse<VieScolaire> getEleveVieScolaireResponse(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/viescolaire.awp?verbe=get&");
@@ -256,9 +288,17 @@ public class EcoleDirecteClient {
 
     /**
      * @param eleveId un identifiant d'eleve (ex : 42)
-     * @return les coordonnees des familles de l'eleve correspondant a eleveId
+     * @return la vie scolaire (absences, etc.) de l'eleve correspondant a eleveId
      */
-    public EcoleDirecteApiResponse<List<CoordonneesFamille>> getEleveCoordonneesFamille(String eleveId) throws EcoleDirecteException {
+    public VieScolaire getEleveVieScolaire(String eleveId) throws EcoleDirecteException {
+        return getEleveVieScolaireResponse(eleveId).getData();
+    }
+
+    /**
+     * @param eleveId un identifiant d'eleve (ex : 42)
+     * @return la reponse complete contenant les coordonnees des familles de l'eleve correspondant a eleveId
+     */
+    public EcoleDirecteApiResponse<List<CoordonneesFamille>> getEleveCoordonneesFamilleResponse(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/coordonneesfamille.awp?verbe=get&");
@@ -267,10 +307,18 @@ public class EcoleDirecteClient {
     }
 
     /**
-     * @param classeId un identifiant de classe (ex : 10)
-     * @return les eleves de la classe correspondant a classeId
+     * @param eleveId un identifiant d'eleve (ex : 42)
+     * @return les coordonnees des familles de l'eleve correspondant a eleveId
      */
-    public EcoleDirecteApiResponse<Eleves> getClasseEleves(String classeId) throws EcoleDirecteException {
+    public List<CoordonneesFamille> getEleveCoordonneesFamille(String eleveId) throws EcoleDirecteException {
+        return getEleveCoordonneesFamilleResponse(eleveId).getData();
+    }
+
+    /**
+     * @param classeId un identifiant de classe (ex : 10)
+     * @return la reponse complete contenant les eleves de la classe correspondant a classeId
+     */
+    public EcoleDirecteApiResponse<Eleves> getClasseElevesResponse(String classeId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/classes/" + classeId + "/eleves.awp?verbe=get&");
@@ -279,12 +327,20 @@ public class EcoleDirecteClient {
     }
 
     /**
+     * @param classeId un identifiant de classe (ex : 10)
+     * @return les eleves de la classe correspondant a classeId
+     */
+    public Eleves getClasseEleves(String classeId) throws EcoleDirecteException {
+        return getClasseElevesResponse(classeId).getData();
+    }
+
+    /**
      * @param enseignantId un identifiant d'enseignant (ex : 50)
      * @param classeId un identifiant de classe (ex : 10)
      * @param periodeId un identifiant de periode (ex : A001)
-     * @return le conseil de la classe classeId, de l'enseignant enseignantId, pour la periode periodeId
+     * @return la reponse complete contenant le conseil de la classe classeId, de l'enseignant enseignantId, pour la periode periodeId
      */
-    public EcoleDirecteApiResponse<ConseilDeClasse> getConseilDeClasse(String enseignantId, String classeId, String periodeId) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<ConseilDeClasse> getConseilDeClasseResponse(String enseignantId, String classeId, String periodeId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         String endpoint = "/enseignants/" + enseignantId
@@ -295,9 +351,19 @@ public class EcoleDirecteClient {
     }
 
     /**
-     * @return les coordonnees de l'etablissement
+     * @param enseignantId un identifiant d'enseignant (ex : 50)
+     * @param classeId un identifiant de classe (ex : 10)
+     * @param periodeId un identifiant de periode (ex : A001)
+     * @return le conseil de la classe classeId, de l'enseignant enseignantId, pour la periode periodeId
      */
-    public EcoleDirecteApiResponse<List<ContactEtablissement>> getContactEtablissement() throws EcoleDirecteException {
+    public ConseilDeClasse getConseilDeClasse(String enseignantId, String classeId, String periodeId) throws EcoleDirecteException {
+        return getConseilDeClasseResponse(enseignantId, classeId, periodeId).getData();
+    }
+
+    /**
+     * @return la reponse complete contenant les coordonnees de l'etablissement
+     */
+    public EcoleDirecteApiResponse<List<ContactEtablissement>> getContactEtablissementResponse() throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/contactetablissement.awp?verbe=get&");
@@ -306,9 +372,16 @@ public class EcoleDirecteClient {
     }
 
     /**
-     * @return les documents pour la famille
+     * @return les coordonnees de l'etablissement
      */
-    public EcoleDirecteApiResponse<Documents> getFamilleDocuments() throws EcoleDirecteException {
+    public List<ContactEtablissement> getContactEtablissement() throws EcoleDirecteException {
+        return getContactEtablissementResponse().getData();
+    }
+
+    /**
+     * @return la reponse complete contenant les documents pour la famille
+     */
+    public EcoleDirecteApiResponse<Documents> getFamilleDocumentsResponse() throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/familledocuments.awp?verbe=get&");
@@ -317,14 +390,28 @@ public class EcoleDirecteClient {
     }
 
     /**
-     * @return les paiements en ligne pour la famille
+     * @return les documents pour la famille
      */
-    public EcoleDirecteApiResponse<List<GroupeDePaiements>> getPaiementsEnLigne() throws EcoleDirecteException {
+    public Documents getFamilleDocuments() throws EcoleDirecteException {
+        return getFamilleDocumentsResponse().getData();
+    }
+
+    /**
+     * @return la reponse complete contenant les paiements en ligne pour la famille
+     */
+    public EcoleDirecteApiResponse<List<GroupeDePaiements>> getPaiementsEnLigneResponse() throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         Request request = buildAuthenticatedPostRequest("/boutique/paiementsenligne.awp?verbe=get&");
         Type responseType = new TypeToken<EcoleDirecteApiResponse<List<GroupeDePaiements>>>(){}.getType();
         return executeRequest(request, responseType);
+    }
+
+    /**
+     * @return les paiements en ligne pour la famille
+     */
+    public List<GroupeDePaiements> getPaiementsEnLigne() throws EcoleDirecteException {
+        return getPaiementsEnLigneResponse().getData();
     }
 
     /**
