@@ -2,37 +2,28 @@ package eu.verdelhan.ecoledirecte;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteAuthException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteException;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteParseException;
 import eu.verdelhan.ecoledirecte.v3.auth.GtkCookies;
 import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.DoubleAuthCnCv;
 import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.DoubleAuthQuestion;
-import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.GetDoubleAuthQuestionResponse;
-import eu.verdelhan.ecoledirecte.v3.auth.doubleauth.PostDoubleAuthChoixResponse;
-import eu.verdelhan.ecoledirecte.v3.boutique.paiementsenligne.GetPaiementsEnLigneResponse;
+import eu.verdelhan.ecoledirecte.v3.auth.login.Login;
 import eu.verdelhan.ecoledirecte.v3.boutique.paiementsenligne.GroupeDePaiements;
 import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
-import eu.verdelhan.ecoledirecte.v3.classes.GetElevesResponse;
 import eu.verdelhan.ecoledirecte.v3.conseildeclasse.ConseilDeClasse;
-import eu.verdelhan.ecoledirecte.v3.conseildeclasse.GetConseilDeClasseResponse;
 import eu.verdelhan.ecoledirecte.v3.contactetablissement.ContactEtablissement;
-import eu.verdelhan.ecoledirecte.v3.contactetablissement.GetContactEtablissementResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.Eleve;
-import eu.verdelhan.ecoledirecte.v3.eleves.GetEleveResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.CoordonneesFamille;
-import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.GetCoordonneesFamilleResponse;
-import eu.verdelhan.ecoledirecte.v3.eleves.notes.GetNotesResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.Notes;
-import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.GetVieScolaireResponse;
 import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.VieScolaire;
 import eu.verdelhan.ecoledirecte.v3.familledocuments.Documents;
-import eu.verdelhan.ecoledirecte.v3.familledocuments.GetFamilleDocumentsResponse;
-import eu.verdelhan.ecoledirecte.v3.auth.login.LoginResponse;
 import lombok.Getter;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -149,7 +140,7 @@ public class EcoleDirecteClient {
      * @param password mot de passe EcoleDirecte
      * @return la reponse du login a l'API EcoleDirecte
      */
-    public LoginResponse authenticate(String id, String password) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<Login> authenticate(String id, String password) throws EcoleDirecteException {
         initLoginGtkCookies();
         return authenticate(id, password, null);
     }
@@ -161,7 +152,7 @@ public class EcoleDirecteClient {
      * @param cncv la validation de la double authentification
      * @return la reponse du login a l'API EcoleDirecte
      */
-    public LoginResponse authenticate(String id, String password, DoubleAuthCnCv cncv) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<Login> authenticate(String id, String password, DoubleAuthCnCv cncv) throws EcoleDirecteException {
         checkGtkCookies();
 
         RequestBody body = buildLoginRequestBody(id, password, cncv);
@@ -172,7 +163,8 @@ public class EcoleDirecteClient {
                 .post(body)
                 .build();
 
-        LoginResponse loginResponse = executeRequest(loginReq, LoginResponse.class);
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<Login>>(){}.getType();
+        EcoleDirecteApiResponse<Login> loginResponse = executeRequest(loginReq, responseType);
         if (loginResponse == null) {
             throw new EcoleDirecteAuthException("Failed login (null response)");
         }
@@ -198,12 +190,12 @@ public class EcoleDirecteClient {
     /**
      * @return la question de double authentification
      */
-    public DoubleAuthQuestion getDoubleAuthQuestion() throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<DoubleAuthQuestion> getDoubleAuthQuestion() throws EcoleDirecteException {
         checkAuthenticationToken();
 
-        Request doubleAuthQuestionReq = buildAuthenticatedPostRequest("/connexion/doubleauth.awp?verbe=get&");
-        GetDoubleAuthQuestionResponse doubleAuthQuestionResp = executeRequest(doubleAuthQuestionReq, GetDoubleAuthQuestionResponse.class);
-        return doubleAuthQuestionResp.getData();
+        Request request = buildAuthenticatedPostRequest("/connexion/doubleauth.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<DoubleAuthQuestion>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
@@ -211,79 +203,79 @@ public class EcoleDirecteClient {
      * @param reponse la reponse (en base64) de la question de double authentification
      * @return l'objet de validation (cncv) de la double authentification
      */
-    public DoubleAuthCnCv postDoubleAuthReponse(String reponse) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<DoubleAuthCnCv> postDoubleAuthReponse(String reponse) throws EcoleDirecteException {
         checkAuthenticationToken();
 
         RequestBody choiceBody = new FormBody.Builder()
                 .add("data", "{ \"choix\": \"" + reponse + "\" }")
                 .build();
-        Request doubleAuthReponseReq = buildAuthenticatedPostRequest(
+        Request request = buildAuthenticatedPostRequest(
                 "/connexion/doubleauth.awp?verbe=post&",
                 choiceBody
         );
 
-        PostDoubleAuthChoixResponse doubleAuthChoixResp = executeRequest(doubleAuthReponseReq, PostDoubleAuthChoixResponse.class);
-        return doubleAuthChoixResp.getData();
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<DoubleAuthCnCv>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @param eleveId un identifiant d'eleve (ex : 42)
      * @return l'eleve correspondant a eleveId
      */
-    public Eleve getEleve(String eleveId) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<Eleve> getEleve(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request eleveReq = buildAuthenticatedPostRequest("/eleves/" + eleveId + ".awp?verbe=get&");
-        GetEleveResponse eleveResponse = executeRequest(eleveReq, GetEleveResponse.class);
-        return eleveResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + ".awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<Eleve>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @param eleveId un identifiant d'eleve (ex : 42)
      * @return les notes de l'eleve correspondant a eleveId
      */
-    public Notes getEleveNotes(String eleveId) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<Notes> getEleveNotes(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request eleveNotesReq = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/notes.awp?verbe=get&");
-        GetNotesResponse eleveNotesResponse = executeRequest(eleveNotesReq, GetNotesResponse.class);
-        return eleveNotesResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/notes.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<Notes>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @param eleveId un identifiant d'eleve (ex : 42)
      * @return la vie scolaire (absences, etc.) de l'eleve correspondant a eleveId
      */
-    public VieScolaire getEleveVieScolaire(String eleveId) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<VieScolaire> getEleveVieScolaire(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request eleveVsReq = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/viescolaire.awp?verbe=get&");
-        GetVieScolaireResponse eleveVsResponse = executeRequest(eleveVsReq, GetVieScolaireResponse.class);
-        return eleveVsResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/viescolaire.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<VieScolaire>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @param eleveId un identifiant d'eleve (ex : 42)
      * @return les coordonnees des familles de l'eleve correspondant a eleveId
      */
-    public List<CoordonneesFamille> getEleveCoordonneesFamille(String eleveId) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<List<CoordonneesFamille>> getEleveCoordonneesFamille(String eleveId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request eleveCfReq = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/coordonneesfamille.awp?verbe=get&");
-        GetCoordonneesFamilleResponse eleveCfResponse = executeRequest(eleveCfReq, GetCoordonneesFamilleResponse.class);
-        return eleveCfResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/eleves/" + eleveId + "/coordonneesfamille.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<List<CoordonneesFamille>>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @param classeId un identifiant de classe (ex : 10)
      * @return les eleves de la classe correspondant a classeId
      */
-    public Eleves getClasseEleves(String classeId) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<Eleves> getClasseEleves(String classeId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request classeElevesReq = buildAuthenticatedPostRequest("/classes/" + classeId + "/eleves.awp?verbe=get&");
-        GetElevesResponse classeElevesResponse = executeRequest(classeElevesReq, GetElevesResponse.class);
-        return classeElevesResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/classes/" + classeId + "/eleves.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<Eleves>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
@@ -292,47 +284,47 @@ public class EcoleDirecteClient {
      * @param periodeId un identifiant de periode (ex : A001)
      * @return le conseil de la classe classeId, de l'enseignant enseignantId, pour la periode periodeId
      */
-    public ConseilDeClasse getConseilDeClasse(String enseignantId, String classeId, String periodeId) throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<ConseilDeClasse> getConseilDeClasse(String enseignantId, String classeId, String periodeId) throws EcoleDirecteException {
         checkFullyAuthenticated();
 
         String endpoint = "/enseignants/" + enseignantId
                 + "/C/" + classeId + "/periodes/" + periodeId + "/conseilDeClasse.awp?verbe=get&";
-        Request conseilReq = buildAuthenticatedPostRequest(endpoint);
-        GetConseilDeClasseResponse conseilResponse = executeRequest(conseilReq, GetConseilDeClasseResponse.class);
-        return conseilResponse.getData();
+        Request request = buildAuthenticatedPostRequest(endpoint);
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<ConseilDeClasse>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @return les coordonnees de l'etablissement
      */
-    public List<ContactEtablissement> getContactEtablissement() throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<List<ContactEtablissement>> getContactEtablissement() throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request ceReq = buildAuthenticatedPostRequest("/contactetablissement.awp?verbe=get&");
-        GetContactEtablissementResponse ceResponse = executeRequest(ceReq, GetContactEtablissementResponse.class);
-        return ceResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/contactetablissement.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<List<ContactEtablissement>>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @return les documents pour la famille
      */
-    public Documents getFamilleDocuments() throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<Documents> getFamilleDocuments() throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request fdReq = buildAuthenticatedPostRequest("/familledocuments.awp?verbe=get&");
-        GetFamilleDocumentsResponse fdResponse = executeRequest(fdReq, GetFamilleDocumentsResponse.class);
-        return fdResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/familledocuments.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<Documents>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
      * @return les paiements en ligne pour la famille
      */
-    public List<GroupeDePaiements> getPaiementsEnLigne() throws EcoleDirecteException {
+    public EcoleDirecteApiResponse<List<GroupeDePaiements>> getPaiementsEnLigne() throws EcoleDirecteException {
         checkFullyAuthenticated();
 
-        Request gdpReq = buildAuthenticatedPostRequest("/boutique/paiementsenligne.awp?verbe=get&");
-        GetPaiementsEnLigneResponse gdpResponse = executeRequest(gdpReq, GetPaiementsEnLigneResponse.class);
-        return gdpResponse.getData();
+        Request request = buildAuthenticatedPostRequest("/boutique/paiementsenligne.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<List<GroupeDePaiements>>>(){}.getType();
+        return executeRequest(request, responseType);
     }
 
     /**
@@ -424,15 +416,15 @@ public class EcoleDirecteClient {
     /**
      * Execute la requete httpRequest.
      * @param httpRequest une requete HTTP
-     * @param clazz le type de retour
-     * @return le resultat de la requete httpRequest sous forme d'instance de clazz
+     * @param responseType le type de retour de la reponse
+     * @return le resultat de la requete httpRequest sous forme d'instance de responseType
      */
-    protected <T> T executeRequest(Request httpRequest, Class<T> clazz) throws EcoleDirecteException {
+    protected <T> T executeRequest(Request httpRequest, Type responseType) throws EcoleDirecteException {
         try (Response response = httpClient.newCall(httpRequest).execute()) {
             if (!response.isSuccessful()) {
                 throw new EcoleDirecteException("Failed request - Response: " + response.message() + " (CODE="+response.code()+")");
             }
-            return parseResponse(response, clazz);
+            return parseResponse(response, responseType);
         } catch (IOException ioe) {
             throw new EcoleDirecteException("Failed request", ioe);
         }
@@ -441,18 +433,18 @@ public class EcoleDirecteClient {
     /**
      * "Parse" la reponse httpResponse.
      * @param httpResponse une reponse HTTP
-     * @param clazz le type de retour
-     * @return la reponse HTTP httpResponse sous forme d'instance de clazz
+     * @param responseType le type de retour de la reponse
+     * @return la reponse HTTP httpResponse sous forme d'instance de responseType
      * @throws EcoleDirecteParseException en cas d'erreur de parsing
      */
-    protected <T> T parseResponse(Response httpResponse, Class<T> clazz) throws EcoleDirecteParseException {
+    protected <T> T parseResponse(Response httpResponse, Type responseType) throws EcoleDirecteParseException {
         if (httpResponse == null || httpResponse.body() == null) {
             throw new EcoleDirecteParseException("Cannot parse null response or null-body response");
         }
         try {
             String responseBody = httpResponse.body().string();
             JsonObject responseAsJsonObject = gson.fromJson(responseBody, JsonObject.class);
-            T parsedResponse = gson.fromJson(responseAsJsonObject, clazz);
+            T parsedResponse = gson.fromJson(responseAsJsonObject, responseType);
 
             if (parsedResponse instanceof EcoleDirecteApiResponse<?> apiResp) {
                 apiResp.setRawData(responseAsJsonObject.get("data"));
