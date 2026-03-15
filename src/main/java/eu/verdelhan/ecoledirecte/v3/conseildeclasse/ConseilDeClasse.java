@@ -4,16 +4,16 @@ package eu.verdelhan.ecoledirecte.v3.conseildeclasse;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class ConseilDeClasse {
+public record ConseilDeClasse(
+    @Expose
+    Appreciation appreciationGenerale,
 
     @Expose
-    private Appreciation appreciationGenerale;
+    List<Eleve> eleves,
+
     @Expose
-    private List<Eleve> eleves;
-    @Expose
-    private Parametrage parametrage;
+    Parametrage parametrage
+) {
 }

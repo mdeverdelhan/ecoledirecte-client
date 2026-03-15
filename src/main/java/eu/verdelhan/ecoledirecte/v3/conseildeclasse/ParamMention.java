@@ -3,16 +3,16 @@ package eu.verdelhan.ecoledirecte.v3.conseildeclasse;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class ParamMention {
+public record ParamMention(
+    @Expose
+    Long id,
 
     @Expose
-    private Long id;
+    String libelle,
+
     @Expose
-    private String libelle;
-    @Expose
-    private Long numLigne;
+    Long numLigne
+) {
 }

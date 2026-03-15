@@ -4,41 +4,52 @@ package eu.verdelhan.ecoledirecte.v3.eleves.notes;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class EnsembleMatieres {
+public record EnsembleMatieres(
+    @Expose
+    String appreciationCE,
 
     @Expose
-    private String appreciationCE;
-    @Expose
-    private String appreciationPP;
-    @Expose
-    private String appreciationVS;
-    @Expose
-    private String dateCalcul;
-    @Expose
-    private String decisionDuConseil;
-    @Expose
-    private List<Discipline> disciplines;
-    @Expose
-    private List<Object> disciplinesSimulation;
-    @Expose
-    private String effectif;
-    @Expose
-    private String moyenneClasse;
-    @Expose
-    private String moyenneGenerale;
-    @Expose
-    private String moyenneMax;
-    @Expose
-    private String moyenneMin;
-    @Expose
-    private String nomCE;
-    @Expose
-    private String nomPP;
-    @Expose
-    private Long rang;
+    String appreciationPP,
 
+    @Expose
+    String appreciationVS,
+
+    @Expose
+    String dateCalcul,
+
+    @Expose
+    String decisionDuConseil,
+
+    @Expose
+    List<Discipline> disciplines,
+
+    @Expose
+    List<Object> disciplinesSimulation,
+
+    @Expose
+    String effectif,
+
+    @Expose
+    String moyenneClasse,
+
+    @Expose
+    String moyenneGenerale,
+
+    @Expose
+    String moyenneMax,
+
+    @Expose
+    String moyenneMin,
+
+    @Expose
+    String nomCE,
+
+    @Expose
+    String nomPP,
+
+    @Expose
+    Long rang
+) {
 }

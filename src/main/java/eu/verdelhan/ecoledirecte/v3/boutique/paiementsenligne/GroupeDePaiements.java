@@ -3,14 +3,12 @@ package eu.verdelhan.ecoledirecte.v3.boutique.paiementsenligne;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class GroupeDePaiements {
+public record GroupeDePaiements(
+    @Expose
+    String libelle,
 
     @Expose
-    private String libelle;
-    @Expose
-    private List<Paiement> paiements;
-
+    List<Paiement> paiements
+) {
 }

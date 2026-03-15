@@ -3,14 +3,12 @@ package eu.verdelhan.ecoledirecte.v3.auth.doubleauth;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class DoubleAuthQuestion {
+public record DoubleAuthQuestion(
+    @Expose
+    List<String> propositions,
 
     @Expose
-    private List<String> propositions;
-    @Expose
-    private String question;
-
+    String question
+) {
 }

@@ -6,22 +6,23 @@ import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import lombok.Getter;
 
 
-@Getter
-public class Notes {
-
+public record Notes(
     @Expose
-    private String foStat;
+    String foStat,
+
     /** LSUN = Livret Scolaire Unique (cle: code de periode, ex. A001, valeur: liste des matieres) */
     @SerializedName("LSUN")
-    private Map<String, List<Matiere>> lSUN;
-    @Expose
-    private List<Note> notes;
-    @Expose
-    private Parametrage parametrage;
-    @Expose
-    private List<Periode> periodes;
+    Map<String, List<Matiere>> lSUN,
 
+    @Expose
+    List<Note> notes,
+
+    @Expose
+    Parametrage parametrage,
+
+    @Expose
+    List<Periode> periodes
+) {
 }

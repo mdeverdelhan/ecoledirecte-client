@@ -3,17 +3,18 @@ package eu.verdelhan.ecoledirecte.v3.eleves.viescolaire;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class VieScolaire {
+public record VieScolaire(
+    @Expose
+    List<AbsencesRetard> absencesRetards,
 
     @Expose
-    private List<AbsencesRetard> absencesRetards;
+    Parametrage parametrage,
+
     @Expose
-    private Parametrage parametrage;
+    PermisPoint permisPoint,
+
     @Expose
-    private PermisPoint permisPoint;
-    @Expose
-    private List<SanctionsEncouragement> sanctionsEncouragements;
+    List<SanctionsEncouragement> sanctionsEncouragements
+) {
 }

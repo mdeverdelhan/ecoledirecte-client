@@ -5,22 +5,25 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import lombok.Getter;
 
 
-@Getter
-public class Parametrage {
+public record Parametrage(
+    @Expose
+    List<ParamAppreciation> appreciations,
 
     @Expose
-    private List<ParamAppreciation> appreciations;
+    Long longueurMaxAppPP,
+
     @Expose
-    private Long longueurMaxAppPP;
-    @Expose
-    private List<ParamMention> mentions;
+    List<ParamMention> mentions,
+
     @SerializedName("PPModifTout")
-    private Boolean pPModifTout;
+    Boolean pPModifTout,
+
     @SerializedName("PPModifVS")
-    private Boolean pPModifVS;
+    Boolean pPModifVS,
+
     @Expose
-    private Boolean saisieAppreciationClasse;
+    Boolean saisieAppreciationClasse
+) {
 }

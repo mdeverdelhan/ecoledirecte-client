@@ -3,22 +3,22 @@ package eu.verdelhan.ecoledirecte.v3.classes;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Entity {
+public record Entity(
+    @Expose
+    String code,
 
     @Expose
-    private String code;
-    @Expose
-    private Long id;
-    @Expose
-    private Boolean isFlexible;
-    @Expose
-    private String libelle;
-    @Expose
-    private String type;
+    Long id,
 
+    @Expose
+    Boolean isFlexible,
 
+    @Expose
+    String libelle,
+
+    @Expose
+    String type
+) {
 }

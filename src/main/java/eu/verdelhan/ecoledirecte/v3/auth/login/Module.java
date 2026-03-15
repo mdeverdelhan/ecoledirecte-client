@@ -3,21 +3,22 @@ package eu.verdelhan.ecoledirecte.v3.auth.login;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Module {
+public record Module(
+    @Expose
+    Long badge,
 
     @Expose
-    private Long badge;
+    String code,
+
     @Expose
-    private String code;
+    Boolean enable,
+
     @Expose
-    private Boolean enable;
+    Long ordre,
+
     @Expose
-    private Long ordre;
-    @Expose
-    private Params params;
-    
+    Params params
+) {
 }

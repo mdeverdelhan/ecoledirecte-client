@@ -3,33 +3,40 @@ package eu.verdelhan.ecoledirecte.v3.conseildeclasse;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Eleve {
+public record Eleve(
+    @Expose
+    Appreciation appreciationCE,
 
     @Expose
-    private Appreciation appreciationCE;
-    @Expose
-    private Appreciation appreciationCN;
-    @Expose
-    private Appreciation appreciationPP;
-    @Expose
-    private Appreciation appreciationVS;
-    @Expose
-    private Long id;
-    @Expose
-    private Appreciation mentionDuConseil;
-    @Expose
-    private String nom;
-    @Expose
-    private String ordreArrivee;
-    @Expose
-    private String particule;
-    @Expose
-    private String photo;
-    @Expose
-    private String prenom;
+    Appreciation appreciationCN,
 
+    @Expose
+    Appreciation appreciationPP,
+
+    @Expose
+    Appreciation appreciationVS,
+
+    @Expose
+    Long id,
+
+    @Expose
+    Appreciation mentionDuConseil,
+
+    @Expose
+    String nom,
+
+    @Expose
+    String ordreArrivee,
+
+    @Expose
+    String particule,
+
+    @Expose
+    String photo,
+
+    @Expose
+    String prenom
+) {
 }

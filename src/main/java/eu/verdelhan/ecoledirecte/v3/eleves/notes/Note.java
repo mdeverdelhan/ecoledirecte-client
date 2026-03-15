@@ -4,55 +4,73 @@ package eu.verdelhan.ecoledirecte.v3.eleves.notes;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Note {
+public record Note(
+    @Expose
+    String codeMatiere,
 
     @Expose
-    private String codeMatiere;
-    @Expose
-    private String codePeriode;
-    @Expose
-    private String codeSousMatiere;
-    @Expose
-    private String coef;
-    @Expose
-    private String commentaire;
-    @Expose
-    private String date;
-    @Expose
-    private String dateSaisie;
-    @Expose
-    private String devoir;
-    @Expose
-    private List<ElementsProgramme> elementsProgramme;
-    @Expose
-    private Boolean enLettre;
-    @Expose
-    private Long id;
-    @Expose
-    private String libelleMatiere;
-    @Expose
-    private String maxClasse;
-    @Expose
-    private String minClasse;
-    @Expose
-    private String moyenneClasse;
-    @Expose
-    private Boolean nonSignificatif;
-    @Expose
-    private String noteSur;
-    @Expose
-    private String typeDevoir;
-    @Expose
-    private String uncCorrige;
-    @Expose
-    private String uncSujet;
-    @Expose
-    private String valeur;
-    @Expose
-    private Boolean valeurisee;
+    String codePeriode,
 
+    @Expose
+    String codeSousMatiere,
+
+    @Expose
+    String coef,
+
+    @Expose
+    String commentaire,
+
+    @Expose
+    String date,
+
+    @Expose
+    String dateSaisie,
+
+    @Expose
+    String devoir,
+
+    @Expose
+    List<ElementsProgramme> elementsProgramme,
+
+    @Expose
+    Boolean enLettre,
+
+    @Expose
+    Long id,
+
+    @Expose
+    String libelleMatiere,
+
+    @Expose
+    String maxClasse,
+
+    @Expose
+    String minClasse,
+
+    @Expose
+    String moyenneClasse,
+
+    @Expose
+    Boolean nonSignificatif,
+
+    @Expose
+    String noteSur,
+
+    @Expose
+    String typeDevoir,
+
+    @Expose
+    String uncCorrige,
+
+    @Expose
+    String uncSujet,
+
+    @Expose
+    String valeur,
+
+    @Expose
+    Boolean valeurisee
+) {
 }

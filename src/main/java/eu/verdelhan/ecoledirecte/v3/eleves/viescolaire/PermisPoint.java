@@ -3,21 +3,24 @@ package eu.verdelhan.ecoledirecte.v3.eleves.viescolaire;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class PermisPoint {
+public record PermisPoint(
+    @Expose
+    String dateDebut,
 
     @Expose
-    private String dateDebut;
+    String dateFin,
+
     @Expose
-    private String dateFin;
+    List<Object> evenements,
+
     @Expose
-    private List<Object> evenements;
+    Long idPermis,
+
     @Expose
-    private Long idPermis;
+    String libellePermis,
+
     @Expose
-    private String libellePermis;
-    @Expose
-    private Long totalPoints;
+    Long totalPoints
+) {
 }

@@ -2,25 +2,30 @@
 package eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class CoordonneesFamille {
+public record CoordonneesFamille(
+    @Expose
+    String adresseLigne1,
 
     @Expose
-    private String adresseLigne1;
+    String adresseLigne2,
+
     @Expose
-    private String adresseLigne2;
+    String adresseLigne3,
+
     @Expose
-    private String adresseLigne3;
+    String codePostal,
+
     @Expose
-    private String codePostal;
+    Conjoint conjoint,
+
     @Expose
-    private Conjoint conjoint;
+    Responsable responsable,
+
     @Expose
-    private Responsable responsable;
+    Long typeLien,
+
     @Expose
-    private Long typeLien;
-    @Expose
-    private String ville;
+    String ville
+) {
 }

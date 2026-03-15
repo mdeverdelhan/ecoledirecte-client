@@ -2,17 +2,18 @@
 package eu.verdelhan.ecoledirecte.v3.conseildeclasse;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class ParamAppreciation {
+public record ParamAppreciation(
+    @Expose
+    String code,
 
     @Expose
-    private String code;
+    Long id,
+
     @Expose
-    private Long id;
+    String libelle,
+
     @Expose
-    private String libelle;
-    @Expose
-    private Long nbCaracteres;
+    Long nbCaracteres
+) {
 }

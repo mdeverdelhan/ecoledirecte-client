@@ -3,20 +3,22 @@ package eu.verdelhan.ecoledirecte.v3.conseildeclasse;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Appreciation {
+public record Appreciation(
+    @Expose
+    String code,
 
     @Expose
-    private String code;
+    String date,
+
     @Expose
-    private String date;
+    String id,
+
     @Expose
-    private String id;
+    String libelle,
+
     @Expose
-    private String libelle;
-    @Expose
-    private String text;
+    String text
+) {
 }

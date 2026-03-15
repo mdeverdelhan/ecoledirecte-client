@@ -3,13 +3,10 @@ package eu.verdelhan.ecoledirecte.v3.auth.login;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Params {
-
+public record Params(
     @Expose
-    private String numeroBadge;
-
+    String numeroBadge
+) {
 }
