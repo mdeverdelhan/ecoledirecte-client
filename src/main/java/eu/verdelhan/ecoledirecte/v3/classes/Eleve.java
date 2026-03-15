@@ -3,45 +3,55 @@ package eu.verdelhan.ecoledirecte.v3.classes;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Eleve {
+public record Eleve(
+    @Expose
+    Long classeId,
 
     @Expose
-    private Long classeId;
-    @Expose
-    private String classeLibelle;
-    @Expose
-    private String dateEntree;
-    @Expose
-    private String dateNaissance;
-    @Expose
-    private String dateSortie;
-    @Expose
-    private String email;
-    @Expose
-    private Boolean estEnStage;
-    @Expose
-    private Long id;
-    @Expose
-    private String nom;
-    @Expose
-    private String numeroBadge;
-    @Expose
-    private String particule;
-    @Expose
-    private String photo;
-    @Expose
-    private String portable;
-    @Expose
-    private String prenom;
-    @Expose
-    private String regime;
-    @Expose
-    private String sexe;
+    String classeLibelle,
 
+    @Expose
+    String dateEntree,
 
+    @Expose
+    String dateNaissance,
 
+    @Expose
+    String dateSortie,
+
+    @Expose
+    String email,
+
+    @Expose
+    Boolean estEnStage,
+
+    @Expose
+    Long id,
+
+    @Expose
+    String nom,
+
+    @Expose
+    String numeroBadge,
+
+    @Expose
+    String particule,
+
+    @Expose
+    String photo,
+
+    @Expose
+    String portable,
+
+    @Expose
+    String prenom,
+
+    @Expose
+    String regime,
+
+    @Expose
+    String sexe
+) {
 }

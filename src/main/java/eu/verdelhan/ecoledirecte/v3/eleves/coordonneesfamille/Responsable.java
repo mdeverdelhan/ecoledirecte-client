@@ -2,35 +2,45 @@
 package eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class Responsable {
+public record Responsable(
+    @Expose
+    String civilite,
 
     @Expose
-    private String civilite;
+    String codePays,
+
     @Expose
-    private String codePays;
+    Csp csp,
+
     @Expose
-    private Csp csp;
+    String mailPerso,
+
     @Expose
-    private String mailPerso;
+    String mailTravail,
+
     @Expose
-    private String mailTravail;
+    String nom,
+
     @Expose
-    private String nom;
+    String nomSimple,
+
     @Expose
-    private String nomSimple;
+    String prenom,
+
     @Expose
-    private String prenom;
+    String profession,
+
     @Expose
-    private String profession;
+    String societe,
+
     @Expose
-    private String societe;
+    String telDomicile,
+
     @Expose
-    private String telDomicile;
+    String telMobile,
+
     @Expose
-    private String telMobile;
-    @Expose
-    private String telTravail;
+    String telTravail
+) {
 }

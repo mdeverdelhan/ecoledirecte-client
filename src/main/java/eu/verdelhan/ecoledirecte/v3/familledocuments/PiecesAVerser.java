@@ -3,17 +3,18 @@ package eu.verdelhan.ecoledirecte.v3.familledocuments;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class PiecesAVerser {
+public record PiecesAVerser(
+    @Expose
+    List<Object> listesPieces,
 
     @Expose
-    private List<Object> listesPieces;
+    List<Personne> personnes,
+
     @Expose
-    private List<Personne> personnes;
+    List<Object> pieces,
+
     @Expose
-    private List<Object> pieces;
-    @Expose
-    private List<Object> televersements;
+    List<Object> televersements
+) {
 }

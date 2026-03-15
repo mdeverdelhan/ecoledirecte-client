@@ -4,27 +4,31 @@ package eu.verdelhan.ecoledirecte.v3.auth.login;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Profile {
+public record Profile(
+    @Expose
+    List<Classe> classes,
 
     @Expose
-    private List<Classe> classes;
+    String email,
+
     @Expose
-    private String email;
+    List<Groupe> groupes,
+
     @Expose
-    private List<Groupe> groupes;
+    String idEtablissement,
+
     @Expose
-    private String idEtablissement;
+    List<Matiere> matieres,
+
     @Expose
-    private List<Matiere> matieres;
+    String nomEtablissement,
+
     @Expose
-    private String nomEtablissement;
+    String photo,
+
     @Expose
-    private String photo;
-    @Expose
-    private String telPortable;
-    
+    String telPortable
+) {
 }

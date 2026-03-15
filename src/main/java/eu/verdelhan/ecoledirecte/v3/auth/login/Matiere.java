@@ -3,17 +3,16 @@ package eu.verdelhan.ecoledirecte.v3.auth.login;
 
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
 
-@Getter
-public class Matiere {
+public record Matiere(
+    @Expose
+    String code,
 
     @Expose
-    private String code;
+    Long id,
+
     @Expose
-    private Long id;
-    @Expose
-    private String libelle;
-    
+    String libelle
+) {
 }

@@ -3,29 +3,36 @@ package eu.verdelhan.ecoledirecte.v3.contactetablissement;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class ContactEtablissement {
+public record ContactEtablissement(
+    @Expose
+    String adresse,
 
     @Expose
-    private String adresse;
+    String contact,
+
     @Expose
-    private String contact;
+    String email,
+
     @Expose
-    private String email;
+    Long id,
+
     @Expose
-    private Long id;
+    Logo logo,
+
     @Expose
-    private Logo logo;
+    String nom,
+
     @Expose
-    private String nom;
+    List<Object> photos,
+
     @Expose
-    private List<Object> photos;
+    String presentation,
+
     @Expose
-    private String presentation;
+    String site,
+
     @Expose
-    private String site;
-    @Expose
-    private String telephone;
+    String telephone
+) {
 }

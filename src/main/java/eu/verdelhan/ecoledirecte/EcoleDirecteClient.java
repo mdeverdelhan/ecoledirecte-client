@@ -158,8 +158,8 @@ public class EcoleDirecteClient {
         RequestBody body = buildLoginRequestBody(id, password, cncv);
         Request loginReq = new Request.Builder()
                 .url(config.getBaseUrl() + "/login.awp")
-                .addHeader("X-GTK", gtkCookies.getGtkCookieString())
-                .addHeader("Cookie", gtkCookies.getSecondCookieString())
+                .addHeader("X-GTK", gtkCookies.gtkCookieString())
+                .addHeader("Cookie", gtkCookies.secondCookieString())
                 .post(body)
                 .build();
 
@@ -169,13 +169,13 @@ public class EcoleDirecteClient {
             throw new EcoleDirecteAuthException("Failed login (null response)");
         }
 
-        if (loginResponse.getCode() == 200) {
+        if (loginResponse.code() == 200) {
             // Authentification complete OK
-            authToken = loginResponse.getToken();
+            authToken = loginResponse.token();
             fullyAuthenticated = true;
-        } else if (loginResponse.getCode() == 250) {
+        } else if (loginResponse.code() == 250) {
             // Recuperation du jeton mais besoin d'une double authentification
-            authToken = loginResponse.getToken();
+            authToken = loginResponse.token();
             fullyAuthenticated = false;
         } else {
             // Authentification echouee
@@ -202,7 +202,7 @@ public class EcoleDirecteClient {
      * @return la question de double authentification
      */
     public DoubleAuthQuestion getDoubleAuthQuestion() throws EcoleDirecteException {
-        return getDoubleAuthQuestionResponse().getData();
+        return getDoubleAuthQuestionResponse().data();
     }
 
     /**
@@ -231,7 +231,7 @@ public class EcoleDirecteClient {
      * @return l'objet de validation (cncv) de la double authentification
      */
     public DoubleAuthCnCv postDoubleAuthReponse(String reponse) throws EcoleDirecteException {
-        return postDoubleAuthReponseResponse(reponse).getData();
+        return postDoubleAuthReponseResponse(reponse).data();
     }
 
     /**
@@ -251,7 +251,7 @@ public class EcoleDirecteClient {
      * @return l'eleve correspondant a eleveId
      */
     public Eleve getEleve(String eleveId) throws EcoleDirecteException {
-        return getEleveResponse(eleveId).getData();
+        return getEleveResponse(eleveId).data();
     }
 
     /**
@@ -271,7 +271,7 @@ public class EcoleDirecteClient {
      * @return les notes de l'eleve correspondant a eleveId
      */
     public Notes getEleveNotes(String eleveId) throws EcoleDirecteException {
-        return getEleveNotesResponse(eleveId).getData();
+        return getEleveNotesResponse(eleveId).data();
     }
 
     /**
@@ -291,7 +291,7 @@ public class EcoleDirecteClient {
      * @return la vie scolaire (absences, etc.) de l'eleve correspondant a eleveId
      */
     public VieScolaire getEleveVieScolaire(String eleveId) throws EcoleDirecteException {
-        return getEleveVieScolaireResponse(eleveId).getData();
+        return getEleveVieScolaireResponse(eleveId).data();
     }
 
     /**
@@ -311,7 +311,7 @@ public class EcoleDirecteClient {
      * @return les coordonnees des familles de l'eleve correspondant a eleveId
      */
     public List<CoordonneesFamille> getEleveCoordonneesFamille(String eleveId) throws EcoleDirecteException {
-        return getEleveCoordonneesFamilleResponse(eleveId).getData();
+        return getEleveCoordonneesFamilleResponse(eleveId).data();
     }
 
     /**
@@ -331,7 +331,7 @@ public class EcoleDirecteClient {
      * @return les eleves de la classe correspondant a classeId
      */
     public Eleves getClasseEleves(String classeId) throws EcoleDirecteException {
-        return getClasseElevesResponse(classeId).getData();
+        return getClasseElevesResponse(classeId).data();
     }
 
     /**
@@ -357,7 +357,7 @@ public class EcoleDirecteClient {
      * @return le conseil de la classe classeId, de l'enseignant enseignantId, pour la periode periodeId
      */
     public ConseilDeClasse getConseilDeClasse(String enseignantId, String classeId, String periodeId) throws EcoleDirecteException {
-        return getConseilDeClasseResponse(enseignantId, classeId, periodeId).getData();
+        return getConseilDeClasseResponse(enseignantId, classeId, periodeId).data();
     }
 
     /**
@@ -375,7 +375,7 @@ public class EcoleDirecteClient {
      * @return les coordonnees de l'etablissement
      */
     public List<ContactEtablissement> getContactEtablissement() throws EcoleDirecteException {
-        return getContactEtablissementResponse().getData();
+        return getContactEtablissementResponse().data();
     }
 
     /**
@@ -393,7 +393,7 @@ public class EcoleDirecteClient {
      * @return les documents pour la famille
      */
     public Documents getFamilleDocuments() throws EcoleDirecteException {
-        return getFamilleDocumentsResponse().getData();
+        return getFamilleDocumentsResponse().data();
     }
 
     /**
@@ -411,7 +411,7 @@ public class EcoleDirecteClient {
      * @return les paiements en ligne pour la famille
      */
     public List<GroupeDePaiements> getPaiementsEnLigne() throws EcoleDirecteException {
-        return getPaiementsEnLigneResponse().getData();
+        return getPaiementsEnLigneResponse().data();
     }
 
     /**
@@ -431,11 +431,11 @@ public class EcoleDirecteClient {
         if (cncv != null) {
             // cn & cn (double authentification)
             Map<String, String> cncvMap = new HashMap<>();
-            if (cncv.getCn() != null && !cncv.getCn().isEmpty()) {
-                cncvMap.put("cn", cncv.getCn());
+            if (cncv.cn() != null && !cncv.cn().isEmpty()) {
+                cncvMap.put("cn", cncv.cn());
             }
-            if (cncv.getCv() != null && !cncv.getCv().isEmpty()) {
-                cncvMap.put("cv", cncv.getCv());
+            if (cncv.cv() != null && !cncv.cv().isEmpty()) {
+                cncvMap.put("cv", cncv.cv());
             }
             if (!cncvMap.isEmpty()) {
                 rootMap.put("fa", Set.of(cncvMap));
@@ -534,7 +534,14 @@ public class EcoleDirecteClient {
             T parsedResponse = gson.fromJson(responseAsJsonObject, responseType);
 
             if (parsedResponse instanceof EcoleDirecteApiResponse<?> apiResp) {
-                apiResp.setRawData(responseAsJsonObject.get("data"));
+                return (T) new EcoleDirecteApiResponse<>(
+                        apiResp.code(),
+                        apiResp.host(),
+                        apiResp.data(),
+                        responseAsJsonObject.get("data"),
+                        apiResp.message(),
+                        apiResp.token()
+                );
             }
 
             return parsedResponse;

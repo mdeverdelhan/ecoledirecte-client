@@ -3,21 +3,24 @@ package eu.verdelhan.ecoledirecte.v3.contactetablissement;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class Logo {
+public record Logo(
+    @Expose
+    List<Object> etatSignatures,
 
     @Expose
-    private List<Object> etatSignatures;
+    Long id,
+
     @Expose
-    private Long id;
+    String libelle,
+
     @Expose
-    private String libelle;
+    Signature signature,
+
     @Expose
-    private Signature signature;
+    Boolean signatureDemandee,
+
     @Expose
-    private Boolean signatureDemandee;
-    @Expose
-    private String type;
+    String type
+) {
 }

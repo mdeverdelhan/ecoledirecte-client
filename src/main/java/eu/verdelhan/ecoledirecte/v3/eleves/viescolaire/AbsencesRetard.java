@@ -2,41 +2,54 @@
 package eu.verdelhan.ecoledirecte.v3.eleves.viescolaire;
 
 import com.google.gson.annotations.Expose;
-import lombok.Getter;
 
-@Getter
-public class AbsencesRetard {
+public record AbsencesRetard(
+    @Expose
+    String aFaire,
 
     @Expose
-    private String aFaire;
+    String commentaire,
+
     @Expose
-    private String commentaire;
+    String date,
+
     @Expose
-    private String date;
+    String dateDeroulement,
+
     @Expose
-    private String dateDeroulement;
+    String displayDate,
+
     @Expose
-    private String displayDate;
+    Long id,
+
     @Expose
-    private Long id;
+    Long idEleve,
+
     @Expose
-    private Long idEleve;
+    Boolean justifie,
+
     @Expose
-    private Boolean justifie;
+    Boolean justifieEd,
+
     @Expose
-    private Boolean justifieEd;
+    String libelle,
+
     @Expose
-    private String libelle;
+    String motif,
+
     @Expose
-    private String motif;
+    String nomEleve,
+
     @Expose
-    private String nomEleve;
+    String par,
+
     @Expose
-    private String par;
+    Long pointsPermis,
+
     @Expose
-    private Long pointsPermis;
+    String typeElement,
+
     @Expose
-    private String typeElement;
-    @Expose
-    private String typeJustification;
+    String typeJustification
+) {
 }
