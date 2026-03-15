@@ -116,6 +116,8 @@ mvn release:prepare
 mvn release:perform
 ```
 
+Déploiements : https://central.sonatype.com/publishing/deployments
+
 ### Contributions
 
 Les contributions sous forme de _pull requests_ sont les bienvenues. Pour les changements importants, veuillez d'abord ouvrir une _issue_ pour discuter de ce que vous aimeriez changer ou ajouter.
