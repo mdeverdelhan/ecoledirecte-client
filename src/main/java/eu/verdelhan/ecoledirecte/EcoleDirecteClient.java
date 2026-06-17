@@ -19,12 +19,12 @@ import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.CoordonneesFamille
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.Notes;
 import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.VieScolaire;
 import eu.verdelhan.ecoledirecte.v3.familledocuments.Documents;
+import eu.verdelhan.ecoledirecte.v3.niveaux.Niveaux;
 import lombok.Getter;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URI;
 import java.util.*;
 
 /**
@@ -236,6 +236,24 @@ public class EcoleDirecteClient {
     }
 
     /**
+     * @return la reponse complete contenant les niveaux du professeur
+     */
+    public EcoleDirecteApiResponse<Niveaux> getNiveauxListeResponse() throws EcoleDirecteException {
+        checkFullyAuthenticated();
+
+        Request request = buildAuthenticatedPostRequest("/niveauxListe.awp?verbe=get&");
+        Type responseType = new TypeToken<EcoleDirecteApiResponse<Niveaux>>(){}.getType();
+        return executeRequest(request, responseType);
+    }
+
+    /**
+     * @return les niveaux du professeur
+     */
+    public Niveaux getNiveauxListe() throws EcoleDirecteException {
+        return getNiveauxListeResponse().getData();
+    }
+
+    /**
      * @param eleveId un identifiant d'eleve (ex : 42)
      * @return la reponse complete contenant l'eleve correspondant a eleveId
      */
@@ -251,7 +269,7 @@ public class EcoleDirecteClient {
      * @param eleveId un identifiant d'eleve (ex : 42)
      * @return l'eleve correspondant a eleveId
      */
-    public Eleve getEleve(String eleveId) throws EcoleDirecteException {
+    public Eleve getNiveauxListe(String eleveId) throws EcoleDirecteException {
         return getEleveResponse(eleveId).getData();
     }
 
