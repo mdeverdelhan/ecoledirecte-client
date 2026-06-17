@@ -1,20 +1,13 @@
 package eu.verdelhan.ecoledirecte;
 
-import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
-import eu.verdelhan.ecoledirecte.v3.conseildeclasse.ConseilDeClasse;
-import eu.verdelhan.ecoledirecte.v3.contactetablissement.ContactEtablissement;
 import eu.verdelhan.ecoledirecte.v3.eleves.Eleve;
-import eu.verdelhan.ecoledirecte.v3.eleves.coordonneesfamille.CoordonneesFamille;
-import eu.verdelhan.ecoledirecte.v3.eleves.notes.Notes;
-import eu.verdelhan.ecoledirecte.v3.eleves.viescolaire.VieScolaire;
+import eu.verdelhan.ecoledirecte.v3.niveaux.Classe;
+import eu.verdelhan.ecoledirecte.v3.niveaux.Niveaux;
 import okhttp3.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.Base64;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class EcoleDirecteClientTest {
 
@@ -39,6 +32,13 @@ public class EcoleDirecteClientTest {
 
 //        EcoleDirecteClient client = new EcoleDirecteClient(config, httpClient);
 //        System.out.println(client.authenticate("xxx", "yyy").getToken());
+//
+//        Niveaux nivs = client.getNiveauxListe();
+//        String classes = nivs.getEtablissements().stream().flatMap(e -> e.getNiveaux().stream())
+//                .flatMap(n -> n.getClasses().stream())
+//                .map(Classe::getCode)
+//                .collect(Collectors.joining(", "));
+//        System.out.println("Classes : " + classes);
 //
 //        Eleve e = client.getEleve("1100");
 //        System.out.println(e.getDateDeNaissance());

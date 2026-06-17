@@ -269,7 +269,7 @@ public class EcoleDirecteClient {
      * @param eleveId un identifiant d'eleve (ex : 42)
      * @return l'eleve correspondant a eleveId
      */
-    public Eleve getNiveauxListe(String eleveId) throws EcoleDirecteException {
+    public Eleve getEleve(String eleveId) throws EcoleDirecteException {
         return getEleveResponse(eleveId).getData();
     }
 
