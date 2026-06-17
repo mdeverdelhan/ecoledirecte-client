@@ -24,6 +24,7 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URI;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class EcoleDirecteClient {
 
         // Execution de la requete GET de login pour recuperation des cookies GTK
         Request loginGtkCookieReq = new Request.Builder()
-                .url(config.getBaseUrl() + "/login.awp?gtk=1&v=" + config.getVersionSiteEcoleDirecte())
+                .url(buildUrl("/login.awp?gtk=1"))
                 .get()
                 .build();
         List<String> cookieStrings;
@@ -157,7 +158,7 @@ public class EcoleDirecteClient {
 
         RequestBody body = buildLoginRequestBody(id, password, cncv);
         Request loginReq = new Request.Builder()
-                .url(config.getBaseUrl() + "/login.awp")
+                .url(buildUrl("/login.awp"))
                 .addHeader("X-GTK", gtkCookies.getGtkCookieString())
                 .addHeader("Cookie", gtkCookies.getSecondCookieString())
                 .post(body)
@@ -415,6 +416,20 @@ public class EcoleDirecteClient {
     }
 
     /**
+     * Construit l'URL complete d'un endpoint EcoleDirecte en y ajoutant
+     * le parametre de requete {@code v} (version du site EcoleDirecte).
+     *
+     * @param endpoint chemin relatif de l'endpoint
+     * @return l'URL construite avec le parametre {@code v}
+     */
+    protected HttpUrl buildUrl(String endpoint) {
+        return HttpUrl.parse(config.getBaseUrl() + endpoint)
+            .newBuilder()
+            .addQueryParameter("v", config.getVersionSiteEcoleDirecte())
+            .build();
+    }
+
+    /**
      * @param id l'identifiant de connexion
      * @param password le mot de passe de connexion
      * @param cncv la validation de la double authentification
@@ -494,7 +509,7 @@ public class EcoleDirecteClient {
      */
     protected Request buildAuthenticatedPostRequest(String endpoint, RequestBody body) {
         return new Request.Builder()
-                .url(config.getBaseUrl() + endpoint)
+                .url(buildUrl(endpoint))
                 .header(AUTH_TOKEN_HEADER_NAME, authToken)
                 .post(body)
                 .build();
