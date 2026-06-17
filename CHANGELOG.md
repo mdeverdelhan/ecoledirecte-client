@@ -4,6 +4,10 @@ Toutes les modifications notables apportées à `ecoledirecte-client` sont docum
 
 ## [Non publié]
 
+- Ajout de l'API `niveauxListe`
+- Refonte de la construction des URLs (pour ajout de la version)
+- Mise à jour de la version du site en 4.100.3
+
 ## [1.5] - 2026-03-15
 
 - Ajout d'un champ JSON `rawData` à `EcoleDirecteApiResponse`
