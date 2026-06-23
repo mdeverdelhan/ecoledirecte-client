@@ -26,7 +26,7 @@
 <dependency>
     <groupId>eu.verdelhan</groupId>
     <artifactId>ecoledirecte-client</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
 </dependency>
 ```
 
@@ -81,21 +81,21 @@ EcoleDirecte est une [plateforme](http://www.ecoledirecte.com) en ligne utilisé
 ```bash
 
 # Login / authentification
-curl 'https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=4.96.3' # Recuperation des cookies GTK (en-tetes)
-curl 'https://api.ecoledirecte.com/v3/login.awp' \
+curl 'https://api.ecoledirecte.com/v3/login.awp?gtk=1&v=4.100.4' # Recuperation des cookies GTK (en-tetes)
+curl 'https://api.ecoledirecte.com/v3/login.awp?v=4.100.4' \
   -X POST \
   -H 'X-GTK: ABCDEF123456' \
   -H 'Cookie: GTK=ABCDEF123456; 789xyzfoo456bar=ABCDEF123456' \
   --data-raw $'data={\n "identifiant": "unIdentifiant", "motdepasse": "unMotDePasse"\n}'
 
 # Récupération des élèves de la classe 15
-curl 'https://api.ecoledirecte.com/v3/classes/15/eleves.awp?verbe=get&' -H 'Accept: application/json, text/plain, */*' -H 'Content-Type: application/x-www-form-urlencoded' --data $'data={\n "token": "token-d-authentification-obtenu-via-login"\n}'
+curl 'https://api.ecoledirecte.com/v3/classes/15/eleves.awp?verbe=get&v=4.100.4' -H 'Accept: application/json, text/plain, */*' -H 'Content-Type: application/x-www-form-urlencoded' --data $'data={\n "token": "token-d-authentification-obtenu-via-login"\n}'
 
 # Récupération des renseignements de l'élèves 1234
-curl 'https://api.ecoledirecte.com/v3/eleves/1234.awp?verbe=get&' -H 'Accept: application/json, text/plain, */*' -H 'Content-Type: application/x-www-form-urlencoded' --data $'data={\n "token": "token-d-authentification-obtenu-via-login"\n}'
+curl 'https://api.ecoledirecte.com/v3/eleves/1234.awp?verbe=get&v=4.100.4' -H 'Accept: application/json, text/plain, */*' -H 'Content-Type: application/x-www-form-urlencoded' --data $'data={\n "token": "token-d-authentification-obtenu-via-login"\n}'
 
 # Récupération des notes de l'élève 1234
-curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&' -H 'accept: application/json, text/plain, */*' -H 'content-type: application/x-www-form-urlencoded' --data $'data={\n "token": "token-d-authentification-obtenu-via-login"\n}'
+curl 'https://api.ecoledirecte.com/v3/eleves/1234/notes.awp?verbe=get&v=4.100.4' -H 'accept: application/json, text/plain, */*' -H 'content-type: application/x-www-form-urlencoded' --data $'data={\n "token": "token-d-authentification-obtenu-via-login"\n}'
 ```
 
 ## Avertissement
