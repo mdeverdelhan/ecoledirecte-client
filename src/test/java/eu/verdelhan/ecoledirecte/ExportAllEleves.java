@@ -1,7 +1,5 @@
 package eu.verdelhan.ecoledirecte;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteException;
 import eu.verdelhan.ecoledirecte.v3.auth.login.Account;
 import eu.verdelhan.ecoledirecte.v3.classes.Eleves;

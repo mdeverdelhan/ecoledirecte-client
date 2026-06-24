@@ -2,6 +2,11 @@
 
 Toutes les modifications notables apportées à `ecoledirecte-client` sont documentées dans ce fichier.
 
+## [Non publié]
+
+- Mise à jour de dépendances
+- Ajout d'exemples dans les tests
+
 ## [1.6] - 2026-06-23
 
 - Ajout de l'API `niveauxListe`
