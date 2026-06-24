@@ -1,5 +1,7 @@
 package eu.verdelhan.ecoledirecte;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import eu.verdelhan.ecoledirecte.exceptions.EcoleDirecteException;
 import eu.verdelhan.ecoledirecte.v3.classes.Eleves;
 import eu.verdelhan.ecoledirecte.v3.eleves.notes.Discipline;
@@ -15,6 +17,8 @@ import eu.verdelhan.ecoledirecte.v3.niveaux.Niveau;
 import eu.verdelhan.ecoledirecte.v3.niveaux.Niveaux;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,14 +39,17 @@ public class ExportAllEleves {
     /** Libelle utilise par l'API pour identifier les punitions dans la vie scolaire. */
     private static final String PUNITION_TYPE = "Punition";
 
+    /** Libelle utilise par l'API pour identifier les feliciations dans la vie scolaire. */
+    private static final String FELICITATION_TYPE = "Félicitation";
+
     /** Longueur attendue pour les codes de periodes exploites dans l'export. */
     private static final int EXPORTED_PERIOD_CODE_LENGTH = 4;
 
     /** Delai minimum ajoute avant chaque appel a l'API EcoleDirecte, en millisecondes. */
-    private static final int MIN_API_CALL_DELAY_MS = 800;
+    private static final int MIN_API_CALL_DELAY_MS = 100;
 
     /** Delai maximum ajoute avant chaque appel a l'API EcoleDirecte, en millisecondes. */
-    private static final int MAX_API_CALL_DELAY_MS = 2_500;
+    private static final int MAX_API_CALL_DELAY_MS = 500;
 
     /** Client EcoleDirecte authentifie utilise par toutes les requetes de l'export. */
     private final EcoleDirecteClient client;
@@ -65,7 +72,7 @@ public class ExportAllEleves {
     public static void main(String[] args) throws Exception {
         Identifiants identifiants = readIdentifiants(args);
         EcoleDirecteClient client = new EcoleDirecteClient(API_BASE_URL);
-        attendreAvantAppelApi();
+
         client.authenticate(identifiants.identifiant(), identifiants.motDePasse());
 
         new ExportAllEleves(client).exportTeacherData();
@@ -101,14 +108,26 @@ public class ExportAllEleves {
      * @throws EcoleDirecteException en cas d'erreur lors des appels a l'API EcoleDirecte
      */
     private List<ClasseExportee> buildClassesExportees() throws EcoleDirecteException {
+        List<Classe> classes = getAllTeacherClasses();
+
+        System.out.printf("Export de %d classes%n", classes.size());
+
         List<ClasseExportee> classesExportees = new ArrayList<>();
-        for (Classe classe : getAllTeacherClasses()) {
-            if (classe != null) {
-                classesExportees.add(new ClasseExportee(
-                        classe.getLibelle(),
-                        buildElevesExportes(classe)
-                ));
-            }
+        int numeroClasse = 0;
+        for (Classe classe : classes) {
+            numeroClasse++;
+
+            System.out.printf(
+                    "[%d/%d] Classe %s (%s)%n",
+                    numeroClasse,
+                    classes.size(),
+                    classe.getLibelle(),
+                    classe.getId()
+            );
+            classesExportees.add(new ClasseExportee(
+                    classe.getLibelle(),
+                    buildElevesExportes(classe)
+            ));
         }
         return classesExportees;
     }
@@ -122,15 +141,15 @@ public class ExportAllEleves {
      * @throws IOException en cas d'erreur d'ecriture lorsque l'implementation sera activee
      */
     private void writeToJson(List<ClasseExportee> classesExportees) throws IOException {
-        // TODO
-//        Gson gson = new GsonBuilder()
-//                .setPrettyPrinting()
-//                .create();
-//
-//        Files.writeString(
-//                Path.of("noted-classes.json"),
-//                gson.toJson(classesExportees)
-//        );
+
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+        Files.writeString(
+                Path.of("noted-classes.json"),
+                gson.toJson(classesExportees)
+        );
     }
 
     /**
@@ -140,7 +159,7 @@ public class ExportAllEleves {
      *
      * @throws EcoleDirecteException si le thread est interrompu pendant l'attente
      */
-    private static void attendreAvantAppelApi() throws EcoleDirecteException {
+    private static void waitBeforeApiCall() throws EcoleDirecteException {
         int delai = ThreadLocalRandom.current().nextInt(MIN_API_CALL_DELAY_MS, MAX_API_CALL_DELAY_MS + 1);
         try {
             Thread.sleep(delai);
@@ -157,7 +176,7 @@ public class ExportAllEleves {
      * @throws EcoleDirecteException en cas d'erreur lors de l'appel a l'API EcoleDirecte
      */
     private List<Classe> getAllTeacherClasses() throws EcoleDirecteException {
-        attendreAvantAppelApi();
+        waitBeforeApiCall();
         Niveaux niveaux = client.getNiveauxListe();
         if (niveaux == null || niveaux.getEtablissements() == null) {
             return List.of();
@@ -184,15 +203,32 @@ public class ExportAllEleves {
      * @throws EcoleDirecteException en cas d'erreur lors des appels a l'API EcoleDirecte
      */
     private List<EleveExporte> buildElevesExportes(Classe classe) throws EcoleDirecteException {
-        attendreAvantAppelApi();
+        waitBeforeApiCall();
         Eleves eleves = client.getClasseEleves(String.valueOf(classe.getId()));
         if (eleves == null || eleves.getEleves() == null) {
             return List.of();
         }
 
+
+        System.out.printf(
+                "  -> %d élèves dans %s%n",
+                eleves.getEleves().size(),
+                classe.getLibelle()
+        );
         List<EleveExporte> elevesExportes = new ArrayList<>();
+        int numeroEleve = 0;
         for (eu.verdelhan.ecoledirecte.v3.classes.Eleve eleve : eleves.getEleves()) {
             if (eleve != null && eleve.getId() != null) {
+                numeroEleve++;
+
+                System.out.printf(
+                        "     [%d/%d] %s %s%n",
+                        numeroEleve,
+                        eleves.getEleves().size(),
+                        eleve.getPrenom(),
+                        eleve.getNom()
+                );
+
                 String eleveId = String.valueOf(eleve.getId());
                 elevesExportes.add(new EleveExporte(
                         buildNomComplet(eleve),
@@ -222,7 +258,7 @@ public class ExportAllEleves {
      * @throws EcoleDirecteException en cas d'erreur lors de l'appel a l'API EcoleDirecte
      */
     private List<PeriodeNotes> buildPeriodesNotes(String eleveId) throws EcoleDirecteException {
-        attendreAvantAppelApi();
+        waitBeforeApiCall();
         Notes notes = client.getEleveNotes(eleveId);
         if (notes == null || notes.getPeriodes() == null) {
             return List.of();
@@ -234,6 +270,9 @@ public class ExportAllEleves {
                 EnsembleMatieres ensembleMatieres = periode.getEnsembleMatieres();
                 periodesNotes.add(new PeriodeNotes(
                         periode.getPeriode(),
+                        periode.getDateDebut(),
+                        periode.getDateFin(),
+                        periode.getDateConseil(),
                         buildNotesMatieres(ensembleMatieres),
                         ensembleMatieres.getAppreciationPP()
                 ));
@@ -270,6 +309,7 @@ public class ExportAllEleves {
         for (Discipline discipline : ensembleMatieres.getDisciplines()) {
             if (discipline != null) {
                 notesMatieres.add(new NoteMatiere(
+                        discipline.getDiscipline(),
                         discipline.getMoyenne(),
                         discipline.getMoyenneClasse(),
                         discipline.getMoyenneMin(),
@@ -293,6 +333,7 @@ public class ExportAllEleves {
         }
         return discipline.getAppreciations().stream()
                 .map(EcoleDirecteUtils::decodeBase64Text)
+                .filter(s -> !s.isBlank())
                 .toList();
     }
 
@@ -304,14 +345,15 @@ public class ExportAllEleves {
      * @throws EcoleDirecteException en cas d'erreur lors de l'appel a l'API EcoleDirecte
      */
     private VieScolaireExportee buildVieScolaireExportee(String eleveId) throws EcoleDirecteException {
-        attendreAvantAppelApi();
+        waitBeforeApiCall();
         VieScolaire vieScolaire = client.getEleveVieScolaire(eleveId);
         if (vieScolaire == null) {
-            return new VieScolaireExportee(List.of(), List.of());
+            return new VieScolaireExportee(List.of(), List.of(), List.of());
         }
         return new VieScolaireExportee(
                 buildAbsencesRetards(vieScolaire),
-                buildPunitions(vieScolaire)
+                buildPunitions(vieScolaire),
+                buildFelicitations(vieScolaire)
         );
     }
 
@@ -331,6 +373,7 @@ public class ExportAllEleves {
             if (absenceRetard != null) {
                 absences.add(new AbsenceRetard(
                         absenceRetard.getDate(),
+                        absenceRetard.getLibelle(),
                         Boolean.TRUE.equals(absenceRetard.getJustifie()),
                         absenceRetard.getMotif()
                 ));
@@ -364,6 +407,30 @@ public class ExportAllEleves {
     }
 
     /**
+     * Construit les felicitations exportees d'un eleve.
+     *
+     * @param vieScolaire vie scolaire retournee par l'API
+     * @return felicitations pretes a etre serialisees
+     */
+    private List<Felicitation> buildFelicitations(VieScolaire vieScolaire) {
+        if (vieScolaire.getSanctionsEncouragements() == null) {
+            return List.of();
+        }
+
+        List<Felicitation> felicitations = new ArrayList<>();
+        for (SanctionsEncouragement sanctionEncouragement : vieScolaire.getSanctionsEncouragements()) {
+            if (sanctionEncouragement != null && FELICITATION_TYPE.equals(sanctionEncouragement.getTypeElement())) {
+                felicitations.add(new Felicitation(
+                        sanctionEncouragement.getDate(),
+                        sanctionEncouragement.getLibelle(),
+                        sanctionEncouragement.getMotif()
+                ));
+            }
+        }
+        return felicitations;
+    }
+
+    /**
      * Retourne une chaine vide lorsqu'une valeur textuelle de l'API est absente.
      *
      * @param value valeur retournee par l'API
@@ -377,20 +444,23 @@ public class ExportAllEleves {
     record Identifiants(String identifiant, String motDePasse) {}
 
     /** Notes exportees pour une matiere d'une periode. */
-    record NoteMatiere(String moyenne, String moyenneClasse, String moyenneMin, String moyenneMax,
+    record NoteMatiere(String libelle, String moyenne, String moyenneClasse, String moyenneMin, String moyenneMax,
                         List<String> appreciations) {}
 
     /** Periode de notes exportee pour un eleve. */
-    record PeriodeNotes(String libelle, List<NoteMatiere> notesMatieres, String appreciationProfPrincipal) {}
+    record PeriodeNotes(String libelle, String dateDebut, String dateFin, String dateConseil, List<NoteMatiere> notesMatieres, String appreciationProfPrincipal) {}
 
     /** Absence ou retard exporte pour un eleve. */
-    record AbsenceRetard(String date, boolean justifie, String motif) {}
+    record AbsenceRetard(String date, String libelle, boolean justifie, String motif) {}
 
     /** Punition exportee pour un eleve. */
     record Punition(String date, String libelle, String motif) {}
 
+    /** Felicitation exportee pour un eleve. */
+    record Felicitation(String date, String libelle, String motif) {}
+
     /** Donnees de vie scolaire exportees pour un eleve. */
-    record VieScolaireExportee(List<AbsenceRetard> absencesRetards, List<Punition> punitions) {}
+    record VieScolaireExportee(List<AbsenceRetard> absencesRetards, List<Punition> punitions, List<Felicitation> felicitations) {}
 
     /** Donnees exportees pour un eleve. */
     record EleveExporte(String nomComplet, List<PeriodeNotes> periodesNotes, VieScolaireExportee vieScolaire) {}
