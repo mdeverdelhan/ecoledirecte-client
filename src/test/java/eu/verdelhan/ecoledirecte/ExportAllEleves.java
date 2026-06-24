@@ -29,7 +29,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * <p>
  * Cette classe est un utilitaire executable depuis une configuration d'IDE. Le login et le mot de passe
  * doivent etre fournis dans les arguments du programme, dans cet ordre : {@code <login> <password>}.
- * L'ecriture effective du fichier JSON est volontairement laissee commentee dans {@link #writeToJson(List)}.
  */
 public class ExportAllEleves {
 
